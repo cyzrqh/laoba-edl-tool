@@ -1,4 +1,4 @@
-name: 构建老八 Windows 便携版
+name: 构建老八 Windows 单文件版
 
 on:
   push:
@@ -14,17 +14,17 @@ jobs:
   build-windows:
     name: Windows ${{ matrix.arch }}
     runs-on: windows-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
         include:
           - arch: x64
             python-architecture: x64
-            artifact-name: 老八-Windows-x64
+            artifact-name: 老八-Windows-x64-单文件
           - arch: x86
             python-architecture: x86
-            artifact-name: 老八-Windows-x86
+            artifact-name: 老八-Windows-x86-单文件
 
     steps:
       - name: Checkout repository
@@ -38,7 +38,7 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-build.txt
 
-      - name: Build Windows ${{ matrix.arch }} portable package
+      - name: Build Windows ${{ matrix.arch }} single EXE
         shell: pwsh
         run: |
           $log = "build-${{ matrix.arch }}.log"
@@ -63,5 +63,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact-name }}
-          path: release/*-${{ matrix.arch }}*.zip
+          path: |
+            release/老八-Windows-${{ matrix.arch }}.exe
+            release/老八-对应源码-${{ matrix.arch }}.zip
           if-no-files-found: error
