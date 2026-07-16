@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -20,8 +21,8 @@ public sealed partial class MainWindow : Window
     private readonly ResourceCatalog _catalog = new();
     private readonly BackendRunner _backend = new();
     private readonly CancellationTokenSource _closing = new();
+    private readonly SemaphoreSlim _operationLock = new(1, 1);
 
-    private readonly ComboBox _portComboBox;
     private readonly ComboBox _loaderComboBox;
     private readonly TextBox _xmlPathTextBox;
     private readonly TextBox _partitionSearchTextBox;
@@ -30,13 +31,11 @@ public sealed partial class MainWindow : Window
     private readonly StackPanel _emptyPartitionPanel;
     private readonly TextBlock _statusTextBlock;
     private readonly ProgressBar _busyProgressBar;
-    private readonly RadioButton _useXmlRadio;
 
     public MainWindow()
     {
         AvaloniaXamlLoader.Load(this);
 
-        _portComboBox = this.FindControl<ComboBox>("PortComboBox")!;
         _loaderComboBox = this.FindControl<ComboBox>("LoaderComboBox")!;
         _xmlPathTextBox = this.FindControl<TextBox>("XmlPathTextBox")!;
         _partitionSearchTextBox = this.FindControl<TextBox>("PartitionSearchTextBox")!;
@@ -45,9 +44,8 @@ public sealed partial class MainWindow : Window
         _emptyPartitionPanel = this.FindControl<StackPanel>("EmptyPartitionPanel")!;
         _statusTextBlock = this.FindControl<TextBlock>("StatusTextBlock")!;
         _busyProgressBar = this.FindControl<ProgressBar>("BusyProgressBar")!;
-        _useXmlRadio = this.FindControl<RadioButton>("UseXmlRadio")!;
 
-        // 日志区按要求保持完全空白，不写启动提示、版本或资源包说明。
+        // 日志区启动时保持完全空白。
         _logTextBox.Text = string.Empty;
 
         try
@@ -117,14 +115,52 @@ public sealed partial class MainWindow : Window
 
     private void ClearLog_Click(object? sender, RoutedEventArgs e) => _logTextBox.Text = string.Empty;
 
+    private async void ExportLog_Click(object? sender, RoutedEventArgs e)
+    {
+        var file = await StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
+        {
+            Title = "导出运行日志",
+            SuggestedFileName = $"老八-运行日志-{DateTime.Now:yyyyMMdd-HHmmss}.txt",
+            DefaultExtension = "txt",
+            FileTypeChoices =
+            [
+                new FilePickerFileType("文本文件") { Patterns = ["*.txt"] },
+                FilePickerFileTypes.All,
+            ],
+        });
+        var path = file?.TryGetLocalPath();
+        if (!string.IsNullOrWhiteSpace(path))
+        {
+            await File.WriteAllTextAsync(
+                path,
+                _logTextBox.Text ?? string.Empty,
+                new UTF8Encoding(false),
+                _closing.Token);
+            _statusTextBlock.Text = "日志已导出";
+        }
+    }
+
+    private void OpenWorkDirectory_Click(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var directory = GetWorkDirectory();
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = directory,
+                UseShellExecute = true,
+            });
+        }
+        catch (Exception exception)
+        {
+            ShowError("无法打开目录", exception.Message);
+        }
+    }
+
+    private async void XmlFlash_Click(object? sender, RoutedEventArgs e) => await RunXmlFlashAsync();
+
     private async void FlashSelected_Click(object? sender, RoutedEventArgs e)
     {
-        if (_useXmlRadio.IsChecked == true && !string.IsNullOrWhiteSpace(_xmlPathTextBox.Text))
-        {
-            await RunXmlFlashAsync();
-            return;
-        }
-
         var partition = GetPartitionName();
         if (partition is null)
         {
@@ -284,25 +320,34 @@ public sealed partial class MainWindow : Window
         string status,
         Action<string>? capture = null)
     {
-        var profile = _loaderComboBox.SelectedItem as LoaderProfile;
-        if (profile is null)
+        if (!await _operationLock.WaitAsync(0, _closing.Token))
         {
-            ShowError("无法开始", "内置资源包中没有可用引导。");
+            ShowError("已有任务", "已有操作正在等待 9008 端口或正在执行，请等待当前任务完成。");
             return -1;
         }
 
-        if (!string.Equals(profile.Auth, "None", StringComparison.OrdinalIgnoreCase)
-            && !string.IsNullOrWhiteSpace(profile.Auth)
-            && !Confirm(
-                "机型需要授权",
-                $"当前内置引导标记的授权方案为“{profile.Auth}”。本工具不会绕过厂商认证。\n\n请确认你已有合法授权。继续？"))
-        {
-            return -1;
-        }
-
-        SetBusy(true, status);
         try
         {
+            var profile = _loaderComboBox.SelectedItem as LoaderProfile;
+            if (profile is null)
+            {
+                ShowError("无法开始", "内置资源包中没有可用引导。");
+                return -1;
+            }
+
+            if (!string.Equals(profile.Auth, "None", StringComparison.OrdinalIgnoreCase)
+                && !string.IsNullOrWhiteSpace(profile.Auth)
+                && !Confirm(
+                    "机型需要授权",
+                    $"当前内置引导标记的授权方案为“{profile.Auth}”。本工具不会绕过厂商认证。\n\n请确认你已有合法授权。继续？"))
+            {
+                return -1;
+            }
+
+            SetBusy(true, $"等待 9008 端口后执行：{status}");
+            await WaitFor9008Async(status, _closing.Token);
+            SetBusy(true, status);
+
             var loaderPath = await _catalog.ExtractLoaderAsync(profile, _closing.Token);
             var arguments = new List<string>(commandArguments)
             {
@@ -312,10 +357,6 @@ public sealed partial class MainWindow : Window
                 && !string.Equals(profile.Storage, "AUTO", StringComparison.OrdinalIgnoreCase))
             {
                 arguments.Add($"--memory={profile.Storage.ToLowerInvariant()}");
-            }
-            if (_portComboBox.SelectedIndex == 2)
-            {
-                arguments.Add("--serial");
             }
 
             var exitCode = await _backend.RunAsync(
@@ -345,6 +386,31 @@ public sealed partial class MainWindow : Window
         finally
         {
             SetBusy(false);
+            _operationLock.Release();
+        }
+    }
+
+    private async Task WaitFor9008Async(string status, CancellationToken cancellationToken)
+    {
+        var announced = false;
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var count = await DeviceDetector.DetectAsync(cancellationToken);
+            if (count > 0)
+            {
+                _statusTextBlock.Text = $"已检测到 {count} 台 9008 设备，正在{status}";
+                AppendLog($"[{DateTime.Now:HH:mm:ss}] 已检测到 9008 端口，开始{status}。{Environment.NewLine}");
+                return;
+            }
+
+            if (!announced)
+            {
+                AppendLog($"[{DateTime.Now:HH:mm:ss}] 正在等待设备进入 Qualcomm 9008 模式…{Environment.NewLine}");
+                announced = true;
+            }
+            _statusTextBlock.Text = $"等待 9008 端口后执行：{status}";
+            await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
         }
     }
 
@@ -383,6 +449,15 @@ public sealed partial class MainWindow : Window
             });
         }
         return rows;
+    }
+
+    private static string GetWorkDirectory()
+    {
+        var directory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            "老八刷机工具");
+        Directory.CreateDirectory(directory);
+        return directory;
     }
 
     private void AppendLog(string text)
