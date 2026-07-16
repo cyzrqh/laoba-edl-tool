@@ -1,0 +1,1 @@
+用于触发并验证最终 Avalonia 紧凑界面的 Windows x64/x86 单文件构建。
