@@ -1,0 +1,159 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Laoba.App.MainWindow"
+        x:CompileBindings="False"
+        Title="老八 EDL 刷机工具"
+        Width="1280"
+        Height="760"
+        MinWidth="1080"
+        MinHeight="650"
+        WindowStartupLocation="CenterScreen">
+  <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="18" RowSpacing="12">
+
+    <Border Grid.Row="0" Classes="card" Padding="14">
+      <Grid ColumnDefinitions="190,12,1.25*,12,1.05*,12,118" RowDefinitions="Auto,8,Auto">
+        <TextBlock Grid.Column="0" Text="端口" FontWeight="SemiBold" />
+        <TextBlock Grid.Column="2" Text="内置引导" FontWeight="SemiBold" />
+        <TextBlock Grid.Column="4" Text="XML 文件" FontWeight="SemiBold" />
+
+        <ComboBox x:Name="PortComboBox" Grid.Row="2" Grid.Column="0" SelectedIndex="0">
+          <ComboBoxItem Content="自动检测" />
+          <ComboBoxItem Content="USB" />
+          <ComboBoxItem Content="指定串口" />
+        </ComboBox>
+
+        <ComboBox x:Name="LoaderComboBox" Grid.Row="2" Grid.Column="2">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <Grid Grid.Row="2" Grid.Column="4" ColumnDefinitions="*,42">
+          <TextBox x:Name="XmlPathTextBox" Watermark="请选择 rawprogram XML" IsReadOnly="True" />
+          <Button Grid.Column="1" Margin="6,0,0,0" Content="…" Click="BrowseXml_Click" />
+        </Grid>
+
+        <Button Grid.Row="2" Grid.Column="6" Classes="primary" Content="检测设备" Click="DetectDevice_Click" />
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="1" Classes="card" Padding="12">
+      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,260" ColumnSpacing="18">
+        <RadioButton x:Name="UseXmlRadio" Grid.Column="0" GroupName="SourceMode" Content="使用 XML" IsChecked="True" />
+        <RadioButton Grid.Column="1" GroupName="SourceMode" Content="选择 XML" />
+        <RadioButton Grid.Column="2" GroupName="SourceMode" Content="使用镜像目录" />
+        <RadioButton Grid.Column="3" GroupName="SourceMode" Content="使用设备分区表" />
+        <RadioButton Grid.Column="4" GroupName="SourceMode" Content="使用自定义地址" />
+        <Grid Grid.Column="6" ColumnDefinitions="Auto,*" ColumnSpacing="10">
+          <TextBlock VerticalAlignment="Center" Text="搜索分区" FontWeight="SemiBold" />
+          <TextBox x:Name="PartitionSearchTextBox" Grid.Column="1" Watermark="请输入分区名…" />
+        </Grid>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="2" ColumnDefinitions="270,12,*,12,300">
+      <Border Grid.Column="0" Classes="card">
+        <Grid RowDefinitions="52,*">
+          <Grid ColumnDefinitions="*,42" Margin="14,0,8,0">
+            <TextBlock VerticalAlignment="Center" Text="日志" FontSize="15" FontWeight="SemiBold" />
+            <Button Grid.Column="1" Content="×" ToolTip.Tip="清空日志" Click="ClearLog_Click" />
+          </Grid>
+          <Border Grid.Row="1" BorderBrush="#EEF0F3" BorderThickness="0,1,0,0">
+            <TextBox x:Name="LogTextBox"
+                     Margin="10"
+                     Padding="8"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     IsReadOnly="True"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     FontFamily="Consolas, Microsoft YaHei UI"
+                     FontSize="12"
+                     VerticalScrollBarVisibility="Auto" />
+          </Border>
+        </Grid>
+      </Border>
+
+      <Border Grid.Column="2" Classes="card">
+        <Grid RowDefinitions="48,*">
+          <Grid ColumnDefinitions="66,54,1.4*,1.2*,100,1.2*" Background="#FAFBFC">
+            <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="LUN" />
+            <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Text="#" />
+            <TextBlock Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" Text="分区名称" />
+            <TextBlock Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Text="起始扇区" />
+            <TextBlock Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Text="大小" />
+            <TextBlock Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" Text="文件" />
+          </Grid>
+
+          <Grid Grid.Row="1">
+            <ListBox x:Name="PartitionListBox" Background="Transparent" BorderThickness="0">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <Grid ColumnDefinitions="66,54,1.4*,1.2*,100,1.2*" Height="38">
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Lun}" />
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Index}" />
+                    <TextBlock Grid.Column="2" VerticalAlignment="Center" Margin="10,0" Text="{Binding Name}" />
+                    <TextBlock Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding StartSector}" />
+                    <TextBlock Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Size}" />
+                    <TextBlock Grid.Column="5" VerticalAlignment="Center" Margin="10,0" Text="{Binding File}" TextTrimming="CharacterEllipsis" />
+                  </Grid>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel x:Name="EmptyPartitionPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="8">
+              <TextBlock HorizontalAlignment="Center" Text="▱" Foreground="#C4C9D0" FontSize="42" />
+              <TextBlock Text="未加载分区表" Foreground="#8A9099" FontSize="14" />
+            </StackPanel>
+          </Grid>
+        </Grid>
+      </Border>
+
+      <ScrollViewer Grid.Column="4" VerticalScrollBarVisibility="Auto">
+        <StackPanel Spacing="10">
+          <Border Classes="card" Padding="14">
+            <StackPanel Spacing="10">
+              <TextBlock Text="刷入操作" FontSize="15" FontWeight="SemiBold" />
+              <Button Classes="action" Content="▶  刷入（已选）" Click="FlashSelected_Click" />
+              <Button Classes="action" Content="▣  刷入指定目录全部文件" Click="FlashFolder_Click" />
+              <Button Classes="action" Content="▤  整机分区备份" Click="BackupAll_Click" />
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card" Padding="14">
+            <StackPanel Spacing="10">
+              <TextBlock Text="回读操作" FontSize="15" FontWeight="SemiBold" />
+              <Button Classes="action" Content="⇩  回读（已选）" Click="ReadSelected_Click" />
+              <Button Classes="action" Content="≡  读取设备分区表" Click="ReadPartitionTable_Click" />
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card" Padding="14">
+            <StackPanel Spacing="10">
+              <TextBlock Text="擦除操作" FontSize="15" FontWeight="SemiBold" />
+              <Button Classes="danger" Content="⌫  擦除（已选）" Click="EraseSelected_Click" />
+            </StackPanel>
+          </Border>
+
+          <Border Classes="card" Padding="14">
+            <StackPanel Spacing="10">
+              <TextBlock Text="其他操作" FontSize="15" FontWeight="SemiBold" />
+              <Button Classes="action" Content="↻  恢复出厂设置" Click="FactoryReset_Click" />
+              <Button Classes="action" Content="⏻  重启设备" Click="ResetDevice_Click" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </ScrollViewer>
+    </Grid>
+
+    <Grid Grid.Row="3" ColumnDefinitions="Auto,*">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <Ellipse Width="9" Height="9" Fill="#18B566" VerticalAlignment="Center" />
+        <TextBlock x:Name="StatusTextBlock" VerticalAlignment="Center" Text="就绪" />
+      </StackPanel>
+      <ProgressBar x:Name="BusyProgressBar" Grid.Column="1" IsIndeterminate="True" IsVisible="False" Height="3" Margin="24,8,0,0" />
+    </Grid>
+  </Grid>
+</Window>
