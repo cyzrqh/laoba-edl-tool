@@ -1,0 +1,54 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Laoba.App.App"
+             RequestedThemeVariant="Light">
+  <Application.Styles>
+    <FluentTheme DensityStyle="Compact" />
+
+    <Style Selector="Window">
+      <Setter Property="FontFamily" Value="Microsoft YaHei UI, Inter" />
+      <Setter Property="Background" Value="#F7F8FA" />
+    </Style>
+
+    <Style Selector="Button">
+      <Setter Property="Height" Value="36" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="Padding" Value="14,0" />
+      <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="#1677FF" />
+      <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="Button.action">
+      <Setter Property="Background" Value="#F3F7FF" />
+      <Setter Property="Foreground" Value="#0969FF" />
+      <Setter Property="BorderBrush" Value="#C8DCFF" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="Button.danger">
+      <Setter Property="Background" Value="#FFF3F3" />
+      <Setter Property="Foreground" Value="#E73535" />
+      <Setter Property="BorderBrush" Value="#FFD2D2" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="TextBox, ComboBox">
+      <Setter Property="MinHeight" Value="36" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="#DEE3EA" />
+      <Setter Property="CornerRadius" Value="6" />
+    </Style>
+
+    <Style Selector="Border.card">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="#E0E4EA" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="8" />
+    </Style>
+  </Application.Styles>
+</Application>
