@@ -25,10 +25,10 @@
         <ComboBox x:Name="LoaderComboBox"
                   Grid.Row="2"
                   Grid.Column="2"
-                  ToolTip.Tip="直接显示资源包 Config.xml 中的原始引导路径">
+                  ToolTip.Tip="内置资源包中的引导；列表使用中文机型名称，实际引导文件保持原格式">
           <ComboBox.ItemTemplate>
             <DataTemplate>
-              <TextBlock Text="{Binding Loader}"
+              <TextBlock Text="{Binding Name}"
                          ToolTip.Tip="{Binding Loader}"
                          TextTrimming="CharacterEllipsis" />
             </DataTemplate>
@@ -117,37 +117,40 @@
         </Grid>
       </Border>
 
-      <ScrollViewer Grid.Column="4" VerticalScrollBarVisibility="Auto">
-        <StackPanel Spacing="10">
-          <Border Classes="card" Padding="14">
-            <StackPanel Spacing="10">
+      <ScrollViewer Grid.Column="4"
+                    VerticalScrollBarVisibility="Auto"
+                    HorizontalScrollBarVisibility="Disabled"
+                    HorizontalContentAlignment="Stretch">
+        <StackPanel Spacing="10" HorizontalAlignment="Stretch">
+          <Border Classes="card" Padding="14" HorizontalAlignment="Stretch">
+            <StackPanel Spacing="10" HorizontalAlignment="Stretch">
               <TextBlock Text="刷入操作" FontSize="15" FontWeight="SemiBold" />
-              <Button Classes="action" Content="▶  刷入（已选）" Click="FlashSelected_Click" />
-              <Button Classes="action" Content="▣  刷入指定目录全部文件" Click="FlashFolder_Click" />
-              <Button Classes="action" Content="▤  整机分区备份" Click="BackupAll_Click" />
+              <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="▶  刷入（已选）" Click="FlashSelected_Click" />
+              <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="▣  刷入指定目录全部文件" Click="FlashFolder_Click" />
+              <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="▤  整机分区备份" Click="BackupAll_Click" />
             </StackPanel>
           </Border>
 
-          <Border Classes="card" Padding="14">
-            <StackPanel Spacing="10">
+          <Border Classes="card" Padding="14" HorizontalAlignment="Stretch">
+            <StackPanel Spacing="10" HorizontalAlignment="Stretch">
               <TextBlock Text="回读操作" FontSize="15" FontWeight="SemiBold" />
-              <Button Classes="action" Content="⇩  回读（已选）" Click="ReadSelected_Click" />
-              <Button Classes="action" Content="≡  读取设备分区表" Click="ReadPartitionTable_Click" />
+              <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="⇩  回读（已选）" Click="ReadSelected_Click" />
+              <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="≡  读取设备分区表" Click="ReadPartitionTable_Click" />
             </StackPanel>
           </Border>
 
-          <Border Classes="card" Padding="14">
-            <StackPanel Spacing="10">
+          <Border Classes="card" Padding="14" HorizontalAlignment="Stretch">
+            <StackPanel Spacing="10" HorizontalAlignment="Stretch">
               <TextBlock Text="擦除操作" FontSize="15" FontWeight="SemiBold" />
-              <Button Classes="danger" Content="⌫  擦除（已选）" Click="EraseSelected_Click" />
+              <Button Classes="danger" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="⌫  擦除（已选）" Click="EraseSelected_Click" />
             </StackPanel>
           </Border>
 
-          <Border Classes="card" Padding="14">
-            <StackPanel Spacing="10">
+          <Border Classes="card" Padding="14" HorizontalAlignment="Stretch">
+            <StackPanel Spacing="10" HorizontalAlignment="Stretch">
               <TextBlock Text="其他操作" FontSize="15" FontWeight="SemiBold" />
-              <Button Classes="action" Content="↻  恢复出厂设置" Click="FactoryReset_Click" />
-              <Button Classes="action" Content="⏻  重启设备" Click="ResetDevice_Click" />
+              <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="↻  恢复出厂设置" Click="FactoryReset_Click" />
+              <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="⏻  重启设备" Click="ResetDevice_Click" />
             </StackPanel>
           </Border>
         </StackPanel>
