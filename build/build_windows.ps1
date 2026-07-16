@@ -69,6 +69,15 @@ if (-not (Test-Path $Py)) { throw "虚拟环境中找不到 Python：$Py" }
 Assert-NativeSuccess "更新 pip/wheel/setuptools"
 & $Py -m pip install -r (Join-Path $Root "requirements-build.txt")
 Assert-NativeSuccess "安装本项目构建依赖"
+
+# capstone 5.0.9 和 cryptography 49 已不提供 32 位 Windows 预编译轮子，
+# 但上游只要求 capstone 和 cryptography>=3.3。先安装仍支持 win32 的兼容版本，
+# 后续安装上游 requirements.txt 时 pip 会保留这些已满足要求的版本。
+if ($Architecture -eq "x86") {
+    & $Py -m pip install "capstone==5.0.2" "cryptography==43.0.3"
+    Assert-NativeSuccess "安装 32 位 Windows 兼容依赖"
+}
+
 & $Py -m pip install -r (Join-Path $Vendor "requirements.txt")
 Assert-NativeSuccess "安装 bkerler/edl 运行依赖"
 
