@@ -23,14 +23,22 @@
         </ComboBox>
 
         <ComboBox x:Name="LoaderComboBox"
+                  Classes="loader"
                   Grid.Row="2"
                   Grid.Column="2"
-                  ToolTip.Tip="内置资源包中的引导；列表使用中文机型名称，实际引导文件保持原格式">
+                  MaxDropDownHeight="470"
+                  HorizontalContentAlignment="Stretch"
+                  ToolTip.Tip="严格按资源包 Config.xml 原始顺序显示；中文名称仅用于界面，实际引导文件保持原格式">
           <ComboBox.ItemTemplate>
             <DataTemplate>
-              <TextBlock Text="{Binding Name}"
-                         ToolTip.Tip="{Binding Loader}"
-                         TextTrimming="CharacterEllipsis" />
+              <Border Height="36" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <TextBlock Text="{Binding DisplayName}"
+                           MaxWidth="400"
+                           Margin="8,0"
+                           VerticalAlignment="Center"
+                           ToolTip.Tip="{Binding Loader}"
+                           TextTrimming="CharacterEllipsis" />
+              </Border>
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
