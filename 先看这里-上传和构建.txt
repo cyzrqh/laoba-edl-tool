@@ -1,0 +1,18 @@
+老八刷机工具：GitHub 上传与编译
+
+一、上传（不要把这个 ZIP 原样上传）
+1. 解压“老八刷机工具-GitHub上传包.zip”。
+2. 打开 GitHub 仓库 https://github.com/cyzrqh/laoba-edl-tool
+3. 进入“代码”，点击“Add file / 添加文件”→“Upload files / 上传文件”。
+4. 把解压目录中的全部内容拖入网页，包括 .github、assets、build、laoba、tests、tools、vendor 等。
+5. 页面底部点击“Commit changes / 提交更改”。
+
+二、编译
+1. 打开仓库顶部“Actions / 操作”。
+2. 如果出现启用工作流提示，点击启用。
+3. 打开“构建老八 Windows 便携版”。首次上传到 main 后通常会自动运行；也可点“Run workflow”。
+4. 等 x64 和 x86 两个任务都变成绿色。
+5. 打开本次运行，在 Artifacts 下载“老八-Windows-x64”和“老八-Windows-x86”。
+6. 解压下载的 Artifact，再解压其中的 portable ZIP，运行“老八.exe”。
+
+注意：程序可以直接打开；连接 Qualcomm 9008 设备时仍需要 Windows 识别相应 USB 驱动。刷写前请备份数据并确认引导和机型匹配。

@@ -1,0 +1,17 @@
+{
+  "file": "qualcomm_resource_pack.zip",
+  "size": 17414318,
+  "sha256": "8bd838bf4a65a91991443ab2df3e8db4bb02d8e426a9d58b29f4f5b0c4172605",
+  "chunk_size": 2097152,
+  "parts": [
+    "part-000.bin",
+    "part-001.bin",
+    "part-002.bin",
+    "part-003.bin",
+    "part-004.bin",
+    "part-005.bin",
+    "part-006.bin",
+    "part-007.bin",
+    "part-008.bin"
+  ]
+}

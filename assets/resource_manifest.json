@@ -1,0 +1,598 @@
+{
+  "original_uploaded_name": "刷机匣高通资源包-2025.11.9...zip",
+  "bundled_filename": "qualcomm_resource_pack.zip",
+  "size_bytes": 17414318,
+  "sha256": "8bd838bf4a65a91991443ab2df3e8db4bb02d8e426a9d58b29f4f5b0c4172605",
+  "package_info": {
+    "publisher": "刷机匣",
+    "publish_date": "1757420406939",
+    "version": "1.0.0",
+    "tip": "无",
+    "package_type": "QC"
+  },
+  "brand_count": 4,
+  "model_count": 41,
+  "unique_loader_count": 28,
+  "loaders": [
+    {
+      "member": "package_qualcomm_edl-master\\Lenovo\\Legion_Y700-2022_devprg",
+      "configured_loader": "/Lenovo/Legion_Y700-2022_devprg",
+      "size_bytes": 712320,
+      "sha256": "4a982b897b9ae7648239e6da9126c3707f8414f34b2b77fe8f6fdc22030d7ee7"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\Lenovo\\Legion_Y700-2023_devprg",
+      "configured_loader": "/Lenovo/Legion_Y700-2023_devprg",
+      "size_bytes": 1538820,
+      "sha256": "8c076320910bb2e5c05635b2ac63b3a8e806b433bac7d7038aaad5345d99d803"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\Lenovo\\Legion_Y700-2025_devprg",
+      "configured_loader": "/Lenovo/Legion_Y700-2025_devprg",
+      "size_bytes": 1564932,
+      "sha256": "a3e32e981ffd1e96d28418bafa779c33c51db79c6a9ad1ef7ae9b98d54de505d"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\Lenovo\\Legion_Y700-4_devprg",
+      "configured_loader": "/Lenovo/Legion_Y700-4_devprg",
+      "size_bytes": 1697740,
+      "sha256": "a38993803139d881f47adfa66309f8d5e545c2e33eb4576d0a585afae9cd3da0"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\Xiaomi\\+--¬+-+¡++++ñ8e.melf",
+      "configured_loader": "/Xiaomi/小米8e.melf",
+      "size_bytes": 1697740,
+      "sha256": "95bd33db724706db5da03882c65783d01338df6159ce563be0ce1b963d83668d"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\Xiaomi\\+--¬+-+¡++++ñ8gen2.melf",
+      "configured_loader": "/Xiaomi/小米8gen2.melf",
+      "size_bytes": 1641376,
+      "sha256": "4cf4570503c186054ca6683fa075f79c6b5b7534c660e5cd4472fac370125de5"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\Nubia_Z17_devprg",
+      "configured_loader": "/ZTE/Nubia_Z17_devprg",
+      "size_bytes": 598320,
+      "sha256": "b51d173a31fcfcff7257a7c20793e854db88aba1990a107e7fb400678dbd99f1"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\Nubia_Z18_devprg",
+      "configured_loader": "/ZTE/Nubia_Z18_devprg",
+      "size_bytes": 680417,
+      "sha256": "2dfcc11cff8d355c906965db0e09aa72bf5577bba156849b791bd02d85a84e27"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\ZTEFamily_888_devprg",
+      "configured_loader": "/ZTE/ZTEFamily_888_devprg",
+      "size_bytes": 956040,
+      "sha256": "a144ddc47efcefaaf12ab1da7a146659f22c78dd441dadf3f25ce038ecc0b22a"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\ZTEFamily_8Gen1_devprg",
+      "configured_loader": "/ZTE/ZTEFamily_8Gen1_devprg",
+      "size_bytes": 1539124,
+      "sha256": "5db728ad808c250291337f8ae3642cc6b782ae5b29239b0af2ddadea1194305b"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\ZTEFamily_8Gen3Phone_devprg",
+      "configured_loader": "/ZTE/ZTEFamily_8Gen3Phone_devprg",
+      "size_bytes": 1553396,
+      "sha256": "01e4f38fd9ffff2056baffde8123ebe966feb6279f2be71bf831729ba66954d9"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\ZTEFamily_8Elite_devprg",
+      "configured_loader": "/ZTE/ZTEFamily_8Elite_devprg",
+      "size_bytes": 1679780,
+      "sha256": "0aab3f764c8ffa28ae84dee5bafb26f8ad21d6ee626adb375b1a1b483316783c"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\ZTEFamily_8Gen2Pad_devprg",
+      "configured_loader": "/ZTE/ZTEFamily_8Gen2Pad_devprg",
+      "size_bytes": 1633124,
+      "sha256": "74db950c956c5028222cb68a98b5015d3dff2017062d238d5a73e6c6097ffb61"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\ZTEFamily_8Gen3Pad_devprg",
+      "configured_loader": "/ZTE/ZTEFamily_8Gen3Pad_devprg",
+      "size_bytes": 1553396,
+      "sha256": "819b3b5eb7cf62071ad27a6266534b6974cf10cda46ea410941308f6cf68ce7d"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\Nubia_RedMagic_devprg",
+      "configured_loader": "/ZTE/Nubia_RedMagic_devprg",
+      "size_bytes": 595424,
+      "sha256": "c338312883cbbfbd19e24f2e25ba071cb6526025deaead3bffc8d8f52b617e55"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\Nubia_X_devprg",
+      "configured_loader": "/ZTE/Nubia_X_devprg",
+      "size_bytes": 680417,
+      "sha256": "2dfcc11cff8d355c906965db0e09aa72bf5577bba156849b791bd02d85a84e27"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\Nubia_mini5G_devprg",
+      "configured_loader": "/ZTE/Nubia_mini5G_devprg",
+      "size_bytes": 724720,
+      "sha256": "611d5a8ee2ecfd0d315a57e15d4d734123a1b564a05267b72fffa6ab39df4048"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\Nubia_Play_devprg",
+      "configured_loader": "/ZTE/Nubia_Play_devprg",
+      "size_bytes": 677496,
+      "sha256": "3d704d862e90b7034235793c4538c7d157835381417f4a0c20788c8ee94ff335"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\RedMagic_Mars_devprg",
+      "configured_loader": "/ZTE/RedMagic_Mars_devprg",
+      "size_bytes": 680425,
+      "sha256": "7a5670b78650b32cfe1027d1eea838f74e97fb3a7f6d88a4ed8f6489fcc43d8a"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\RedMagicCommon_855_devprg",
+      "configured_loader": "/ZTE/RedMagicCommon_855_devprg",
+      "size_bytes": 716216,
+      "sha256": "34577ab36e1688d48787c5b2c99042006ff5507c6e1c62f6af573640f0bae367"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\RedMagicCommon_865_devprg",
+      "configured_loader": "/ZTE/RedMagicCommon_865_devprg",
+      "size_bytes": 700624,
+      "sha256": "e73d6e62e51889239cda6ab05ec466d547199e42a1955a24ca165518a91ad27c"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\RedMagicCommon_888_devprg",
+      "configured_loader": "/ZTE/RedMagicCommon_888_devprg",
+      "size_bytes": 964232,
+      "sha256": "7d1754cd57c3b22914e931a0fc2a130f2ae85b7b87afc725cf2c9fba123c0179"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\RedMagicCommon_8Gen1_devprg",
+      "configured_loader": "/ZTE/RedMagicCommon_8Gen1_devprg",
+      "size_bytes": 1580132,
+      "sha256": "4bd2c7679d97856df1100370d41a5467c9adf965f5237df1a6ff3a19a594ce56"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\RedMagic_7S_devprg",
+      "configured_loader": "/ZTE/RedMagic_7S_devprg",
+      "size_bytes": 1567540,
+      "sha256": "1d39f6c818415a18a22fbb3bb137995b23da68623222cd8c34ad1b6215703d5c"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\RedMagic_7SPro_devprg",
+      "configured_loader": "/ZTE/RedMagic_7SPro_devprg",
+      "size_bytes": 1567540,
+      "sha256": "fe95f25ca990b204cc835868edd5b22721bb8e4d69033dac4c33f49bbdf2f750"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\RedMagicCommon_8Gen2_devprg",
+      "configured_loader": "/ZTE/RedMagicCommon_8Gen2_devprg",
+      "size_bytes": 1768340,
+      "sha256": "b85fb0e651f88f12e3c9b7b56c0f7229449c410f87fc20c6bc35698516383297"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\ZTEFamily_8+Pad_devprg",
+      "configured_loader": "/ZTE/ZTEFamily_8+Pad_devprg",
+      "size_bytes": 1491364,
+      "sha256": "9ee00906452edeff1323dbb1ce77f056146149e36c26bbd8ccacc06caa91e9f8"
+    },
+    {
+      "member": "package_qualcomm_edl-master\\ZTE\\ZTEFamily_8ElitePad_devprg",
+      "configured_loader": "/ZTE/ZTEFamily_8ElitePad_devprg",
+      "size_bytes": 1659300,
+      "sha256": "733465cd7b4fac7fc4e49670819b0d5b0a5981d85ee4b8da1056d08035c23105"
+    }
+  ],
+  "models": [
+    {
+      "brand": "联想ZUK小新拯救者",
+      "series": "拯救者系列",
+      "model": "拯救者Y700 2022(一代)(TB9707F)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/Lenovo/Legion_Y700-2022_devprg",
+      "description": "TB9707F",
+      "loader_sha256": "4a982b897b9ae7648239e6da9126c3707f8414f34b2b77fe8f6fdc22030d7ee7"
+    },
+    {
+      "brand": "联想ZUK小新拯救者",
+      "series": "拯救者系列",
+      "model": "拯救者Y700 2023(二代)(TB320FC)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/Lenovo/Legion_Y700-2023_devprg",
+      "description": "TB320FC",
+      "loader_sha256": "8c076320910bb2e5c05635b2ac63b3a8e806b433bac7d7038aaad5345d99d803"
+    },
+    {
+      "brand": "联想ZUK小新拯救者",
+      "series": "拯救者系列",
+      "model": "拯救者Y700 2025(三代)(TB321FU)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/Lenovo/Legion_Y700-2025_devprg",
+      "description": "TB321FU",
+      "loader_sha256": "a3e32e981ffd1e96d28418bafa779c33c51db79c6a9ad1ef7ae9b98d54de505d"
+    },
+    {
+      "brand": "联想ZUK小新拯救者",
+      "series": "拯救者系列",
+      "model": "拯救者Y700 2025(四代)(TB322FC)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/Lenovo/Legion_Y700-4_devprg",
+      "description": "TB322FC",
+      "loader_sha256": "a38993803139d881f47adfa66309f8d5e545c2e33eb4576d0a585afae9cd3da0"
+    },
+    {
+      "brand": "小米红米",
+      "series": "通用",
+      "model": "小米8e(骁龙8 Elite)",
+      "storage": "UFS",
+      "auth": "Xiaomi",
+      "loader": "/Xiaomi/小米8e.melf",
+      "description": "骁龙8 Elite",
+      "loader_sha256": "95bd33db724706db5da03882c65783d01338df6159ce563be0ce1b963d83668d"
+    },
+    {
+      "brand": "小米红米",
+      "series": "通用",
+      "model": "小米8Gen2(骁龙8Gen2)",
+      "storage": "UFS",
+      "auth": "Xiaomi",
+      "loader": "/Xiaomi/小米8gen2.melf",
+      "description": "骁龙8Gen2",
+      "loader_sha256": "4cf4570503c186054ca6683fa075f79c6b5b7534c660e5cd4472fac370125de5"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚Z系列",
+      "model": "努比亚Z17",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/Nubia_Z17_devprg",
+      "description": "骁龙835",
+      "loader_sha256": "b51d173a31fcfcff7257a7c20793e854db88aba1990a107e7fb400678dbd99f1"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚Z系列",
+      "model": "努比亚Z18",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/Nubia_Z18_devprg",
+      "description": "骁龙845",
+      "loader_sha256": "2dfcc11cff8d355c906965db0e09aa72bf5577bba156849b791bd02d85a84e27"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚Z系列",
+      "model": "努比亚Z30Pro",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_888_devprg",
+      "description": "骁龙888",
+      "loader_sha256": "a144ddc47efcefaaf12ab1da7a146659f22c78dd441dadf3f25ce038ecc0b22a"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚Z系列",
+      "model": "努比亚Z40Pro",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_8Gen1_devprg",
+      "description": "骁龙8Gen1",
+      "loader_sha256": "5db728ad808c250291337f8ae3642cc6b782ae5b29239b0af2ddadea1194305b"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚Z系列",
+      "model": "努比亚Z60Ultra(普通版,摄影师版,领先版)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_8Gen3Phone_devprg",
+      "description": "骁龙8Gen3",
+      "loader_sha256": "01e4f38fd9ffff2056baffde8123ebe966feb6279f2be71bf831729ba66954d9"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚Z系列",
+      "model": "努比亚Z70Ultra",
+      "storage": "UFS",
+      "auth": "ZTE",
+      "loader": "/ZTE/ZTEFamily_8Elite_devprg",
+      "description": "骁龙8至尊版",
+      "loader_sha256": "0aab3f764c8ffa28ae84dee5bafb26f8ad21d6ee626adb375b1a1b483316783c"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚Z系列",
+      "model": "努比亚Z70SUltra",
+      "storage": "UFS",
+      "auth": "ZTE",
+      "loader": "/ZTE/ZTEFamily_8Elite_devprg",
+      "description": "骁龙8至尊版",
+      "loader_sha256": "0aab3f764c8ffa28ae84dee5bafb26f8ad21d6ee626adb375b1a1b483316783c"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚平板系列",
+      "model": "努比亚平板3D(一代)(未经测试)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_888_devprg",
+      "description": "骁龙888",
+      "loader_sha256": "a144ddc47efcefaaf12ab1da7a146659f22c78dd441dadf3f25ce038ecc0b22a"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚平板系列",
+      "model": "努比亚平板3D(二代)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_8Gen2Pad_devprg",
+      "description": "骁龙8Gen2",
+      "loader_sha256": "74db950c956c5028222cb68a98b5015d3dff2017062d238d5a73e6c6097ffb61"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚平板系列",
+      "model": "努比亚平板Pro",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_8Gen3Pad_devprg",
+      "description": "骁龙8Gen3",
+      "loader_sha256": "819b3b5eb7cf62071ad27a6266534b6974cf10cda46ea410941308f6cf68ce7d"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚其他系列",
+      "model": "努比亚红魔(NX609J)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/Nubia_RedMagic_devprg",
+      "description": "骁龙835",
+      "loader_sha256": "c338312883cbbfbd19e24f2e25ba071cb6526025deaead3bffc8d8f52b617e55"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚其他系列",
+      "model": "努比亚X",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/Nubia_X_devprg",
+      "description": "骁龙845",
+      "loader_sha256": "2dfcc11cff8d355c906965db0e09aa72bf5577bba156849b791bd02d85a84e27"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚其他系列",
+      "model": "努比亚mini5G",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/Nubia_mini5G_devprg",
+      "description": "骁龙855公版机",
+      "loader_sha256": "611d5a8ee2ecfd0d315a57e15d4d734123a1b564a05267b72fffa6ab39df4048"
+    },
+    {
+      "brand": "努比亚",
+      "series": "努比亚其他系列",
+      "model": "努比亚Play",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/Nubia_Play_devprg",
+      "description": "骁龙765G",
+      "loader_sha256": "3d704d862e90b7034235793c4538c7d157835381417f4a0c20788c8ee94ff335"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔Mars",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagic_Mars_devprg",
+      "description": "骁龙845",
+      "loader_sha256": "7a5670b78650b32cfe1027d1eea838f74e97fb3a7f6d88a4ed8f6489fcc43d8a"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔3",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_855_devprg",
+      "description": "骁龙855",
+      "loader_sha256": "34577ab36e1688d48787c5b2c99042006ff5507c6e1c62f6af573640f0bae367"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔3S",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_855_devprg",
+      "description": "骁龙855",
+      "loader_sha256": "34577ab36e1688d48787c5b2c99042006ff5507c6e1c62f6af573640f0bae367"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔5G",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_865_devprg",
+      "description": "骁龙865",
+      "loader_sha256": "e73d6e62e51889239cda6ab05ec466d547199e42a1955a24ca165518a91ad27c"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔5S",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_865_devprg",
+      "description": "骁龙865",
+      "loader_sha256": "e73d6e62e51889239cda6ab05ec466d547199e42a1955a24ca165518a91ad27c"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔6",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_888_devprg",
+      "description": "骁龙888",
+      "loader_sha256": "7d1754cd57c3b22914e931a0fc2a130f2ae85b7b87afc725cf2c9fba123c0179"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔6Pro",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_888_devprg",
+      "description": "骁龙888",
+      "loader_sha256": "7d1754cd57c3b22914e931a0fc2a130f2ae85b7b87afc725cf2c9fba123c0179"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔6SPro",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_888_devprg",
+      "description": "骁龙888",
+      "loader_sha256": "7d1754cd57c3b22914e931a0fc2a130f2ae85b7b87afc725cf2c9fba123c0179"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔6R",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_888_devprg",
+      "description": "骁龙888",
+      "loader_sha256": "a144ddc47efcefaaf12ab1da7a146659f22c78dd441dadf3f25ce038ecc0b22a"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔7",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_8Gen1_devprg",
+      "description": "骁龙8Gen1",
+      "loader_sha256": "4bd2c7679d97856df1100370d41a5467c9adf965f5237df1a6ff3a19a594ce56"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔7Pro",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_8Gen1_devprg",
+      "description": "骁龙8Gen1",
+      "loader_sha256": "4bd2c7679d97856df1100370d41a5467c9adf965f5237df1a6ff3a19a594ce56"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔7S",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagic_7S_devprg",
+      "description": "骁龙8+",
+      "loader_sha256": "1d39f6c818415a18a22fbb3bb137995b23da68623222cd8c34ad1b6215703d5c"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔7SPro",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagic_7SPro_devprg",
+      "description": "骁龙8+",
+      "loader_sha256": "fe95f25ca990b204cc835868edd5b22721bb8e4d69033dac4c33f49bbdf2f750"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔8系列",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/RedMagicCommon_8Gen2_devprg",
+      "description": "骁龙8Gen2",
+      "loader_sha256": "b85fb0e651f88f12e3c9b7b56c0f7229449c410f87fc20c6bc35698516383297"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔9系列",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_8Gen3Phone_devprg",
+      "description": "骁龙8Gen3",
+      "loader_sha256": "01e4f38fd9ffff2056baffde8123ebe966feb6279f2be71bf831729ba66954d9"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔数字系列",
+      "model": "红魔10系列",
+      "storage": "UFS",
+      "auth": "ZTE",
+      "loader": "/ZTE/ZTEFamily_8Elite_devprg",
+      "description": "骁龙8至尊版",
+      "loader_sha256": "0aab3f764c8ffa28ae84dee5bafb26f8ad21d6ee626adb375b1a1b483316783c"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔平板系列",
+      "model": "红魔电竞平板(一代)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_8+Pad_devprg",
+      "description": "骁龙8+",
+      "loader_sha256": "9ee00906452edeff1323dbb1ce77f056146149e36c26bbd8ccacc06caa91e9f8"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔平板系列",
+      "model": "红魔平板3D探索版",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_8Gen2Pad_devprg",
+      "description": "骁龙8Gen2",
+      "loader_sha256": "74db950c956c5028222cb68a98b5015d3dff2017062d238d5a73e6c6097ffb61"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔平板系列",
+      "model": "红魔电竞平板Pro(REDMAGIC_Nova_Gaming_Tablet)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_8Gen3Pad_devprg",
+      "description": "骁龙8Gen3",
+      "loader_sha256": "819b3b5eb7cf62071ad27a6266534b6974cf10cda46ea410941308f6cf68ce7d"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔平板系列",
+      "model": "红魔电竞平板3Pro",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/ZTEFamily_8ElitePad_devprg",
+      "description": "骁龙8至尊版",
+      "loader_sha256": "733465cd7b4fac7fc4e49670819b0d5b0a5981d85ee4b8da1056d08035c23105"
+    },
+    {
+      "brand": "红魔",
+      "series": "红魔其他系列",
+      "model": "努比亚红魔(NX609J)",
+      "storage": "UFS",
+      "auth": "None",
+      "loader": "/ZTE/Nubia_RedMagic_devprg",
+      "description": "骁龙835",
+      "loader_sha256": "c338312883cbbfbd19e24f2e25ba071cb6526025deaead3bffc8d8f52b617e55"
+    }
+  ]
+}
