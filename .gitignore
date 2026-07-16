@@ -1,0 +1,16 @@
+# Python caches
+__pycache__/
+.pytest_cache/
+*.py[cod]
+
+# Local virtual environments
+.venv*/
+
+# Build outputs
+build/pyinstaller-*/
+build/runtime-dll-*/
+dist/
+release/
+
+# Reassembled locally from assets/resource_parts/*.bin
+assets/qualcomm_resource_pack.zip
