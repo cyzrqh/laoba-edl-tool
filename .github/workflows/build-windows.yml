@@ -40,9 +40,26 @@ jobs:
 
       - name: Build Windows ${{ matrix.arch }} portable package
         shell: pwsh
-        run: .\build\build_windows.ps1 -Architecture ${{ matrix.arch }}
+        run: |
+          $log = "build-${{ matrix.arch }}.log"
+          & pwsh -NoLogo -NoProfile -File .\build\build_windows.ps1 -Architecture "${{ matrix.arch }}" *> $log
+          $exitCode = $LASTEXITCODE
+          Get-Content $log
+          if ($exitCode -ne 0) {
+            Write-Error "Windows ${{ matrix.arch }} 构建失败，退出代码：$exitCode"
+            exit $exitCode
+          }
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 构建日志-${{ matrix.arch }}
+          path: build-${{ matrix.arch }}.log
+          if-no-files-found: warn
 
       - name: Upload ${{ matrix.artifact-name }}
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact-name }}
