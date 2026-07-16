@@ -83,6 +83,11 @@ foreach ($Path in @($BackendDist, $BackendWork)) {
     --clean `
     --onefile `
     --console `
+    --optimize 2 `
+    --exclude-module tkinter `
+    --exclude-module unittest `
+    --exclude-module pydoc `
+    --exclude-module doctest `
     --name laoba-backend `
     --distpath $BackendDist `
     --workpath $BackendWork `
@@ -152,5 +157,6 @@ Remove-Item $SourceStage -Recurse -Force
 
 Write-Host "构建完成：" -ForegroundColor Green
 Write-Host "  $ReleaseExe"
+Write-Host "  文件大小: $([math]::Round((Get-Item $ReleaseExe).Length / 1MB, 2)) MiB"
 Write-Host "  SHA-256: $((Get-FileHash $ReleaseExe -Algorithm SHA256).Hash.ToLower())"
 Write-Host "  $SourceZip"
