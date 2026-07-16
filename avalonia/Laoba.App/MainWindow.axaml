@@ -142,6 +142,7 @@
             <StackPanel Spacing="10" HorizontalAlignment="Stretch">
               <TextBlock Text="刷入操作" FontSize="15" FontWeight="SemiBold" />
               <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="▶  刷入（已选）" Click="FlashSelected_Click" />
+              <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="▧  执行 XML 刷写" Click="XmlFlash_Click" />
               <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="▣  刷入指定目录全部文件" Click="FlashFolder_Click" />
               <Button Classes="action" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Content="▤  整机分区备份" Click="BackupAll_Click" />
             </StackPanel>
