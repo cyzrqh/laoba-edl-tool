@@ -1,0 +1,222 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="LaobaAvalonia.MainWindow"
+        x:CompileBindings="False"
+        Title="老八 EDL 刷机工具"
+        Icon="/Assets/app_icon.ico"
+        Width="1600" Height="960"
+        MinWidth="1180" MinHeight="720"
+        Background="#F7F8FA"
+        FontFamily="Microsoft YaHei UI, Segoe UI"
+        FontSize="15"
+        WindowStartupLocation="CenterScreen">
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="Height" Value="44" />
+      <Setter Property="Padding" Value="16,0" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
+      <Setter Property="FontSize" Value="15" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="Height" Value="44" />
+      <Setter Property="Padding" Value="14,0" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
+    </Style>
+    <Style Selector="ComboBox">
+      <Setter Property="Height" Value="44" />
+      <Setter Property="Padding" Value="12,0" />
+      <Setter Property="CornerRadius" Value="6" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
+    </Style>
+    <Style Selector="RadioButton">
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
+    </Style>
+    <Style Selector="CheckBox">
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
+    </Style>
+    <Style Selector="Button.primary">
+      <Setter Property="Background" Value="#0B6CFF" />
+      <Setter Property="Foreground" Value="White" />
+      <Setter Property="BorderThickness" Value="0" />
+    </Style>
+    <Style Selector="Button.action">
+      <Setter Property="Background" Value="#F5F8FF" />
+      <Setter Property="Foreground" Value="#0866F5" />
+      <Setter Property="BorderBrush" Value="#BFD7FF" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="Button.danger">
+      <Setter Property="Background" Value="#FFF7F7" />
+      <Setter Property="Foreground" Value="#F04444" />
+      <Setter Property="BorderBrush" Value="#FFCACA" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="DataGrid">
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="GridLinesVisibility" Value="Horizontal" />
+      <Setter Property="HorizontalGridLinesBrush" Value="#EBEDF0" />
+      <Setter Property="VerticalGridLinesBrush" Value="#EBEDF0" />
+      <Setter Property="RowHeight" Value="42" />
+      <Setter Property="ColumnHeaderHeight" Value="48" />
+      <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
+      <Setter Property="FontSize" Value="14" />
+    </Style>
+  </Window.Styles>
+
+  <Grid RowDefinitions="112,62,*,38" Margin="0">
+    <Border Grid.Row="0" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="280,20,*,20,500,20,150" Margin="28,20,28,18">
+        <StackPanel Grid.Column="0" Spacing="8">
+          <TextBlock Text="端口" FontWeight="SemiBold" />
+          <ComboBox x:Name="PortComboBox" SelectedIndex="0">
+            <ComboBoxItem Content="自动检测" />
+            <ComboBoxItem Content="串口自动" />
+            <ComboBoxItem Content="指定串口" />
+          </ComboBox>
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" Spacing="8">
+          <TextBlock Text="内置引导" FontWeight="SemiBold" />
+          <ComboBox x:Name="LoaderComboBox"
+                    ToolTip.Tip="列表保持资源包中的原始引导路径格式"
+                    HorizontalContentAlignment="Stretch"
+                    SelectionChanged="LoaderComboBox_OnSelectionChanged" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="4" Spacing="8">
+          <TextBlock Text="XML 文件" FontWeight="SemiBold" />
+          <Grid ColumnDefinitions="*,52">
+            <TextBox x:Name="XmlPathTextBox" Watermark="请选择 XML 文件（rawprogram.xml）" IsReadOnly="True" />
+            <Button Grid.Column="1" Margin="8,0,0,0" Content="📁" Click="ChooseXml_OnClick" />
+          </Grid>
+        </StackPanel>
+
+        <Button Grid.Column="6" Classes="primary" VerticalAlignment="Bottom" Content="⌕  检测设备" Click="DetectDevice_OnClick" />
+      </Grid>
+    </Border>
+
+    <Border Grid.Row="1" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="Auto,18,Auto,18,Auto,18,Auto,18,Auto,*,110,300" Margin="28,9">
+        <RadioButton Grid.Column="0" Content="使用 XML" GroupName="FlashMode" IsChecked="True" />
+        <RadioButton Grid.Column="2" Content="选择 XML" GroupName="FlashMode" />
+        <RadioButton Grid.Column="4" Content="使用镜像目录" GroupName="FlashMode" />
+        <RadioButton Grid.Column="6" Content="使用设备分区表" GroupName="FlashMode" />
+        <RadioButton Grid.Column="8" Content="使用自定义地址" GroupName="FlashMode" />
+        <TextBlock Grid.Column="10" Text="搜索分区" FontWeight="SemiBold" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,14,0" />
+        <TextBox Grid.Column="11" x:Name="PartitionSearchTextBox" Watermark="请输入分区名..." TextChanged="PartitionSearch_OnTextChanged" />
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="2" ColumnDefinitions="330,14,*,16,350" Margin="24,16,24,14">
+      <Border Grid.Column="0" Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="8">
+        <Grid RowDefinitions="58,*">
+          <Border BorderBrush="#E7E9ED" BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="*,46" Margin="18,0,8,0">
+              <TextBlock Text="日志" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+              <Button Grid.Column="1" Content="⌫" Background="Transparent" BorderThickness="0" Click="ClearLog_OnClick" ToolTip.Tip="清空日志" />
+            </Grid>
+          </Border>
+          <TextBox Grid.Row="1"
+                   x:Name="LogTextBox"
+                   Text=""
+                   IsReadOnly="True"
+                   AcceptsReturn="True"
+                   TextWrapping="Wrap"
+                   VerticalContentAlignment="Top"
+                   Padding="16"
+                   BorderThickness="0"
+                   Background="Transparent"
+                   FontFamily="Consolas, Microsoft YaHei UI"
+                   FontSize="13" />
+        </Grid>
+      </Border>
+
+      <Grid Grid.Column="2" RowDefinitions="46,*">
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,16,Auto,16,Auto,16,Auto,*">
+          <TextBlock Text="已选择: " FontWeight="SemiBold" VerticalAlignment="Center" />
+          <TextBlock Grid.Column="1" x:Name="SelectedCountText" Text="0" FontWeight="Bold" VerticalAlignment="Center" />
+          <CheckBox Grid.Column="2" Content="全选" VerticalAlignment="Center" Checked="SelectAll_OnChecked" Unchecked="SelectAll_OnUnchecked" />
+          <CheckBox Grid.Column="4" Content="用户数据分区" VerticalAlignment="Center" />
+          <CheckBox Grid.Column="6" Content="分区表" VerticalAlignment="Center" />
+        </Grid>
+
+        <Border Grid.Row="1" Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="8">
+          <Grid>
+            <DataGrid x:Name="PartitionGrid"
+                      AutoGenerateColumns="False"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      SelectionMode="Extended"
+                      SelectionChanged="PartitionGrid_OnSelectionChanged">
+              <DataGrid.Columns>
+                <DataGridTextColumn Header="LUN" Binding="{ReflectionBinding Lun}" Width="72" />
+                <DataGridTextColumn Header="#" Binding="{ReflectionBinding Number}" Width="72" />
+                <DataGridTextColumn Header="分区名称" Binding="{ReflectionBinding Name}" Width="2*" />
+                <DataGridTextColumn Header="起始扇区" Binding="{ReflectionBinding StartSector}" Width="1.5*" />
+                <DataGridTextColumn Header="大小" Binding="{ReflectionBinding Size}" Width="1.2*" />
+                <DataGridTextColumn Header="文件" Binding="{ReflectionBinding File}" Width="2*" />
+              </DataGrid.Columns>
+            </DataGrid>
+            <StackPanel x:Name="EmptyPartitionPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10" IsHitTestVisible="False">
+              <TextBlock Text="▱" FontSize="48" Foreground="#C8CDD4" HorizontalAlignment="Center" />
+              <TextBlock Text="未加载分区表" Foreground="#8B9098" FontSize="15" HorizontalAlignment="Center" />
+            </StackPanel>
+          </Grid>
+        </Border>
+      </Grid>
+
+      <StackPanel Grid.Column="4" Spacing="14">
+        <TextBlock Text="操作" FontWeight="Bold" FontSize="16" Margin="4,0,0,0" />
+
+        <Border Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="8" Padding="14">
+          <StackPanel Spacing="10">
+            <TextBlock Text="刷入操作" FontWeight="SemiBold" />
+            <Button Classes="action" Content="▶  刷入（已选）" Click="FlashSelected_OnClick" />
+            <Button Classes="action" Content="▣  刷入指定目录全部文件" Click="FlashFolder_OnClick" />
+            <Button Classes="action" Content="▣  整机分区备份" Click="BackupAll_OnClick" />
+          </StackPanel>
+        </Border>
+
+        <Border Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="8" Padding="14">
+          <StackPanel Spacing="10">
+            <TextBlock Text="回读操作" FontWeight="SemiBold" />
+            <Button Classes="action" Content="☁  回读（已选）" Click="ReadSelected_OnClick" />
+          </StackPanel>
+        </Border>
+
+        <Border Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="8" Padding="14">
+          <StackPanel Spacing="10">
+            <TextBlock Text="擦除操作" FontWeight="SemiBold" />
+            <Button Classes="danger" Content="♜  擦除（已选）⌄" Click="EraseSelected_OnClick" />
+          </StackPanel>
+        </Border>
+
+        <Border Background="White" BorderBrush="#E2E5E9" BorderThickness="1" CornerRadius="8" Padding="14">
+          <StackPanel Spacing="10">
+            <TextBlock Text="其他操作" FontWeight="SemiBold" />
+            <Button Classes="action" Content="◯  恢复出厂设置" Click="FactoryReset_OnClick" />
+            <Button Classes="action" Content="⏻  重启设备⌄" Click="ResetDevice_OnClick" />
+          </StackPanel>
+        </Border>
+
+        <Button Content="更多功能⌄" HorizontalContentAlignment="Stretch" Click="MoreFeatures_OnClick" />
+      </StackPanel>
+    </Grid>
+
+    <Border Grid.Row="3" Background="White" BorderBrush="#E5E7EB" BorderThickness="0,1,0,0">
+      <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="26,0" Spacing="10">
+        <Ellipse x:Name="StatusDot" Width="10" Height="10" Fill="#20B26B" />
+        <TextBlock x:Name="StatusText" Text="就绪" VerticalAlignment="Center" />
+      </StackPanel>
+    </Border>
+  </Grid>
+</Window>
