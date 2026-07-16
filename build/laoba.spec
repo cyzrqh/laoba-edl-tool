@@ -16,20 +16,29 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(VENDOR_EDL))
 
 edl_datas, edl_binaries, edl_hiddenimports = collect_all("edlclient")
+ctk_datas, ctk_binaries, ctk_hiddenimports = collect_all("customtkinter")
 architecture = os.environ.get("LAOBA_ARCH", "x64")
 runtime_libusb = ROOT / "build" / f"runtime-dll-{architecture}" / "libusb-1.0.dll"
 if not runtime_libusb.exists():
     raise SystemExit(f"缺少运行时 libusb DLL：{runtime_libusb}")
-edl_binaries.append((str(runtime_libusb), "."))
-hiddenimports = sorted(set(edl_hiddenimports + collect_submodules("edlclient") + [
-    "usb.backend.libusb1",
-    "serial.tools.list_ports",
-    "Cryptodome",
-    "Crypto",
-    "lxml.etree",
-]))
 
-datas = list(edl_datas)
+binaries = list(edl_binaries) + list(ctk_binaries)
+binaries.append((str(runtime_libusb), "."))
+hiddenimports = sorted(set(
+    edl_hiddenimports
+    + ctk_hiddenimports
+    + collect_submodules("edlclient")
+    + collect_submodules("customtkinter")
+    + [
+        "usb.backend.libusb1",
+        "serial.tools.list_ports",
+        "Cryptodome",
+        "Crypto",
+        "lxml.etree",
+    ]
+))
+
+datas = list(edl_datas) + list(ctk_datas)
 datas += [
     (str(ROOT / "assets" / "app_icon.png"), "assets"),
     (str(ROOT / "assets" / "app_icon.ico"), "assets"),
@@ -54,7 +63,7 @@ if upstream_readme.exists():
 analysis = Analysis(
     [str(ROOT / "app.py")],
     pathex=[str(ROOT), str(VENDOR_EDL)],
-    binaries=edl_binaries,
+    binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
     hookspath=[],
@@ -66,11 +75,13 @@ analysis = Analysis(
 )
 pyz = PYZ(analysis.pure)
 
+# 将 Python、EDL 核心、驱动、图标和资源包全部封装到一个 EXE 中。
 exe = EXE(
     pyz,
     analysis.scripts,
+    analysis.binaries,
+    analysis.datas,
     [],
-    exclude_binaries=True,
     name="老八",
     debug=False,
     bootloader_ignore_signals=False,
@@ -85,14 +96,4 @@ exe = EXE(
     icon=str(ROOT / "assets" / "app_icon.ico"),
     version=str(ROOT / "build" / "version_info.txt"),
     uac_admin=False,
-)
-
-collection = COLLECT(
-    exe,
-    analysis.binaries,
-    analysis.datas,
-    strip=False,
-    upx=False,
-    upx_exclude=[],
-    name="老八",
 )
