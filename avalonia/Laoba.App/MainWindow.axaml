@@ -11,29 +11,23 @@
   <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="18" RowSpacing="12">
 
     <Border Grid.Row="0" Classes="card" Padding="14">
-      <Grid ColumnDefinitions="190,12,1.25*,12,1.05*,12,118" RowDefinitions="Auto,8,Auto">
-        <TextBlock Grid.Column="0" Text="端口" FontWeight="SemiBold" />
-        <TextBlock Grid.Column="2" Text="内置引导" FontWeight="SemiBold" />
-        <TextBlock Grid.Column="4" Text="XML 文件" FontWeight="SemiBold" />
-
-        <ComboBox x:Name="PortComboBox" Grid.Row="2" Grid.Column="0" SelectedIndex="0">
-          <ComboBoxItem Content="自动检测" />
-          <ComboBoxItem Content="USB" />
-          <ComboBoxItem Content="指定串口" />
-        </ComboBox>
+      <Grid ColumnDefinitions="420,12,*,8,44,12,118" RowDefinitions="Auto,8,Auto">
+        <TextBlock Grid.Column="0" Text="内置引导" FontWeight="SemiBold" />
 
         <ComboBox x:Name="LoaderComboBox"
                   Classes="loader"
                   Grid.Row="2"
-                  Grid.Column="2"
+                  Grid.Column="0"
+                  Width="420"
                   MaxDropDownHeight="470"
+                  HorizontalAlignment="Left"
                   HorizontalContentAlignment="Stretch"
                   ToolTip.Tip="严格按资源包 Config.xml 原始顺序显示；中文名称仅用于界面，实际引导文件保持原格式">
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <Border Height="36" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                 <TextBlock Text="{Binding DisplayName}"
-                           MaxWidth="400"
+                           MaxWidth="380"
                            Margin="8,0"
                            VerticalAlignment="Center"
                            ToolTip.Tip="{Binding Loader}"
@@ -43,26 +37,40 @@
           </ComboBox.ItemTemplate>
         </ComboBox>
 
-        <Grid Grid.Row="2" Grid.Column="4" ColumnDefinitions="*,42">
-          <TextBox x:Name="XmlPathTextBox" PlaceholderText="请选择 rawprogram XML" IsReadOnly="True" />
-          <Button Grid.Column="1" Margin="6,0,0,0" Content="…" Click="BrowseXml_Click" />
-        </Grid>
+        <TextBox x:Name="XmlPathTextBox"
+                 Grid.Row="2"
+                 Grid.Column="2"
+                 PlaceholderText="XML 文件"
+                 TextAlignment="Center"
+                 HorizontalContentAlignment="Center"
+                 VerticalContentAlignment="Center"
+                 IsReadOnly="True"
+                 ToolTip.Tip="选择 rawprogram XML 文件" />
+        <Button Grid.Row="2"
+                Grid.Column="4"
+                Content="📁"
+                FontSize="16"
+                Padding="0"
+                ToolTip.Tip="选择 XML 文件"
+                Click="BrowseXml_Click" />
 
-        <Button Grid.Row="2" Grid.Column="6" Classes="primary" Content="检测设备" Click="DetectDevice_Click" />
+        <Button Grid.Row="2" Grid.Column="6" Classes="primary" Content="检测 9008" Click="DetectDevice_Click" />
       </Grid>
     </Border>
 
     <Border Grid.Row="1" Classes="card" Padding="12">
-      <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,*,260" ColumnSpacing="18">
-        <RadioButton x:Name="UseXmlRadio" Grid.Column="0" GroupName="SourceMode" Content="使用 XML" IsChecked="True" />
-        <RadioButton Grid.Column="1" GroupName="SourceMode" Content="选择 XML" />
-        <RadioButton Grid.Column="2" GroupName="SourceMode" Content="使用镜像目录" />
-        <RadioButton Grid.Column="3" GroupName="SourceMode" Content="使用设备分区表" />
-        <RadioButton Grid.Column="4" GroupName="SourceMode" Content="使用自定义地址" />
-        <Grid Grid.Column="6" ColumnDefinitions="Auto,*" ColumnSpacing="10">
-          <TextBlock VerticalAlignment="Center" Text="搜索分区" FontWeight="SemiBold" />
-          <TextBox x:Name="PartitionSearchTextBox" Grid.Column="1" PlaceholderText="请输入分区名…" />
-        </Grid>
+      <Grid ColumnDefinitions="Auto,260,*,Auto,Auto" ColumnSpacing="10">
+        <TextBlock VerticalAlignment="Center" Text="搜索分区" FontWeight="SemiBold" />
+        <TextBox x:Name="PartitionSearchTextBox"
+                 Grid.Column="1"
+                 PlaceholderText="请输入准确分区名…" />
+        <TextBlock Grid.Column="2"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"
+                   Foreground="#7A828C"
+                   Text="点击右侧操作后，工具会持续等待设备进入 Qualcomm 9008 模式" />
+        <Button Grid.Column="3" Content="导出日志" Click="ExportLog_Click" />
+        <Button Grid.Column="4" Content="打开工作目录" Click="OpenWorkDirectory_Click" />
       </Grid>
     </Border>
 
