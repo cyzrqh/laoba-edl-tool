@@ -22,10 +22,15 @@
           <ComboBoxItem Content="指定串口" />
         </ComboBox>
 
-        <ComboBox x:Name="LoaderComboBox" Grid.Row="2" Grid.Column="2">
+        <ComboBox x:Name="LoaderComboBox"
+                  Grid.Row="2"
+                  Grid.Column="2"
+                  ToolTip.Tip="直接显示资源包 Config.xml 中的原始引导路径">
           <ComboBox.ItemTemplate>
             <DataTemplate>
-              <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+              <TextBlock Text="{Binding Loader}"
+                         ToolTip.Tip="{Binding Loader}"
+                         TextTrimming="CharacterEllipsis" />
             </DataTemplate>
           </ComboBox.ItemTemplate>
         </ComboBox>
@@ -62,6 +67,7 @@
           </Grid>
           <Border Grid.Row="1" BorderBrush="#EEF0F3" BorderThickness="0,1,0,0">
             <TextBox x:Name="LogTextBox"
+                     Text=""
                      Margin="10"
                      Padding="8"
                      AcceptsReturn="True"
