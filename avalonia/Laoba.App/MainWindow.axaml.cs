@@ -3,8 +3,11 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 
@@ -18,10 +21,15 @@ public sealed partial class MainWindow : Window
     private const uint MbIconError = 0x00000010;
     private const int IdOk = 1;
 
+    private static readonly IBrush ConnectedBrush = new SolidColorBrush(Color.Parse("#18B566"));
+    private static readonly IBrush DisconnectedBrush = new SolidColorBrush(Color.Parse("#AAB2BD"));
+    private static readonly IBrush WaitingBrush = new SolidColorBrush(Color.Parse("#F2A100"));
+
     private readonly ResourceCatalog _catalog = new();
     private readonly BackendRunner _backend = new();
     private readonly CancellationTokenSource _closing = new();
     private readonly SemaphoreSlim _operationLock = new(1, 1);
+    private readonly SemaphoreSlim _deviceRefreshLock = new(1, 1);
 
     private readonly ComboBox _loaderComboBox;
     private readonly TextBox _xmlPathTextBox;
@@ -30,7 +38,11 @@ public sealed partial class MainWindow : Window
     private readonly ListBox _partitionListBox;
     private readonly StackPanel _emptyPartitionPanel;
     private readonly TextBlock _statusTextBlock;
+    private readonly Ellipse _statusDot;
     private readonly ProgressBar _busyProgressBar;
+
+    private bool _operationActive;
+    private string _lastDeviceStatus = "未检测到9008设备";
 
     public MainWindow()
     {
@@ -43,9 +55,9 @@ public sealed partial class MainWindow : Window
         _partitionListBox = this.FindControl<ListBox>("PartitionListBox")!;
         _emptyPartitionPanel = this.FindControl<StackPanel>("EmptyPartitionPanel")!;
         _statusTextBlock = this.FindControl<TextBlock>("StatusTextBlock")!;
+        _statusDot = this.FindControl<Ellipse>("StatusDot")!;
         _busyProgressBar = this.FindControl<ProgressBar>("BusyProgressBar")!;
 
-        // 日志区启动时保持完全空白。
         _logTextBox.Text = string.Empty;
 
         try
@@ -59,11 +71,12 @@ public sealed partial class MainWindow : Window
         }
         catch (Exception exception)
         {
-            _statusTextBlock.Text = "内置引导加载失败";
+            SetStatus("内置引导加载失败", DeviceState.Disconnected);
             ShowError("资源包错误", exception.Message);
         }
 
         Closing += (_, _) => _closing.Cancel();
+        _ = MonitorDeviceStatusAsync(_closing.Token);
     }
 
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
@@ -75,7 +88,15 @@ public sealed partial class MainWindow : Window
     private static void ShowError(string title, string message) =>
         MessageBoxW(IntPtr.Zero, message, title, MbOk | MbIconError);
 
-    private async void BrowseXml_Click(object? sender, RoutedEventArgs e)
+    private async void BrowseXml_Click(object? sender, RoutedEventArgs e) => await BrowseXmlAsync();
+
+    private async void BrowseXml_DoubleTapped(object? sender, TappedEventArgs e)
+    {
+        e.Handled = true;
+        await BrowseXmlAsync();
+    }
+
+    private async Task BrowseXmlAsync()
     {
         var result = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
@@ -91,25 +112,51 @@ public sealed partial class MainWindow : Window
         if (!string.IsNullOrWhiteSpace(path))
         {
             _xmlPathTextBox.Text = path;
+            AppendLog($"[{DateTime.Now:HH:mm:ss}] 已选择 XML：{path}{Environment.NewLine}");
         }
     }
 
     private async void DetectDevice_Click(object? sender, RoutedEventArgs e)
     {
-        SetBusy(true, "正在检测 9008 设备…");
+        SetBusy(true);
+        SetStatus("正在检测9008设备…", DeviceState.Waiting);
         try
         {
-            var count = await DeviceDetector.DetectAsync(_closing.Token);
-            _statusTextBlock.Text = count > 0 ? $"已连接 {count} 台 9008 设备" : "未检测到 9008 设备";
+            await RefreshDeviceStatusAsync(force: true, _closing.Token);
+        }
+        catch (OperationCanceledException)
+        {
         }
         catch (Exception exception)
         {
-            _statusTextBlock.Text = "设备检测失败";
+            SetStatus("9008设备检测失败", DeviceState.Disconnected);
             ShowError("检测失败", exception.Message);
         }
         finally
         {
             SetBusy(false);
+        }
+    }
+
+    private async void ViewSlot_Click(object? sender, RoutedEventArgs e)
+    {
+        var captured = new StringBuilder();
+        var exitCode = await RunEdlAsync(["getactiveslot"], "查看当前槽位", text => captured.Append(text));
+        if (exitCode != 0)
+        {
+            return;
+        }
+
+        var match = Regex.Match(captured.ToString(), @"Current active slot:\s*([ab])", RegexOptions.IgnoreCase);
+        if (match.Success)
+        {
+            var slot = match.Groups[1].Value.ToUpperInvariant();
+            SetStatus($"{_lastDeviceStatus} · 当前槽位：{slot}", DeviceState.Connected);
+            AppendLog($"[{DateTime.Now:HH:mm:ss}] 当前活动槽位：{slot}{Environment.NewLine}");
+        }
+        else
+        {
+            SetStatus($"{_lastDeviceStatus} · 未能识别当前槽位", DeviceState.Connected);
         }
     }
 
@@ -136,7 +183,7 @@ public sealed partial class MainWindow : Window
                 _logTextBox.Text ?? string.Empty,
                 new UTF8Encoding(false),
                 _closing.Token);
-            _statusTextBlock.Text = "日志已导出";
+            AppendLog($"[{DateTime.Now:HH:mm:ss}] 日志已导出：{path}{Environment.NewLine}");
         }
     }
 
@@ -157,10 +204,14 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private async void XmlFlash_Click(object? sender, RoutedEventArgs e) => await RunXmlFlashAsync();
-
     private async void FlashSelected_Click(object? sender, RoutedEventArgs e)
     {
+        if (!string.IsNullOrWhiteSpace(_xmlPathTextBox.Text))
+        {
+            await RunXmlFlashAsync();
+            return;
+        }
+
         var partition = GetPartitionName();
         if (partition is null)
         {
@@ -312,8 +363,23 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private async void ResetDevice_Click(object? sender, RoutedEventArgs e) =>
-        await RunEdlAsync(["reset"], "重启设备");
+    private async void RestartSystem_Click(object? sender, RoutedEventArgs e) =>
+        await RunEdlAsync(["reset", "--resetmode=reset"], "重启到系统");
+
+    private async void ShutdownDevice_Click(object? sender, RoutedEventArgs e) =>
+        await RunEdlAsync(["reset", "--resetmode=off"], "关闭设备");
+
+    private async void RestartEdl_Click(object? sender, RoutedEventArgs e) =>
+        await RunEdlAsync(["reset", "--resetmode=edl"], "重启到9008");
+
+    private async void RestartRecovery_Click(object? sender, RoutedEventArgs e) =>
+        await RunEdlAsync(["reset", "--resetmode=recovery"], "重启到Recovery");
+
+    private async void RestartFastbootD1_Click(object? sender, RoutedEventArgs e) =>
+        await RunEdlAsync(["reset", "--resetmode=fastboot"], "重启到FastbootD（方案1）");
+
+    private async void RestartFastbootD2_Click(object? sender, RoutedEventArgs e) =>
+        await RunEdlAsync(["reset", "--resetmode=fastbootd"], "重启到FastbootD（方案2）");
 
     private async Task<int> RunEdlAsync(
         IReadOnlyList<string> commandArguments,
@@ -322,10 +388,11 @@ public sealed partial class MainWindow : Window
     {
         if (!await _operationLock.WaitAsync(0, _closing.Token))
         {
-            ShowError("已有任务", "已有操作正在等待 9008 端口或正在执行，请等待当前任务完成。");
+            ShowError("已有任务", "已有操作正在等待9008端口或正在执行，请等待当前任务完成。");
             return -1;
         }
 
+        _operationActive = true;
         try
         {
             var profile = _loaderComboBox.SelectedItem as LoaderProfile;
@@ -344,9 +411,10 @@ public sealed partial class MainWindow : Window
                 return -1;
             }
 
-            SetBusy(true, $"等待 9008 端口后执行：{status}");
-            await WaitFor9008Async(status, _closing.Token);
-            SetBusy(true, status);
+            SetBusy(true);
+            SetStatus($"未检测到9008设备，正在等待：{status}", DeviceState.Waiting);
+            var connectedDevice = await WaitFor9008Async(status, _closing.Token);
+            SetStatus($"{FormatDeviceStatus([connectedDevice])} · 正在{status}", DeviceState.Connected);
 
             var loaderPath = await _catalog.ExtractLoaderAsync(profile, _closing.Token);
             var arguments = new List<string>(commandArguments)
@@ -368,40 +436,45 @@ public sealed partial class MainWindow : Window
                 }),
                 _closing.Token);
 
-            _statusTextBlock.Text = exitCode == 0 ? "任务完成" : $"任务失败（代码 {exitCode}）";
+            AppendLog(
+                exitCode == 0
+                    ? $"[{DateTime.Now:HH:mm:ss}] {status}完成。{Environment.NewLine}"
+                    : $"[{DateTime.Now:HH:mm:ss}] {status}失败，退出代码：{exitCode}。{Environment.NewLine}");
             return exitCode;
         }
         catch (OperationCanceledException)
         {
-            _statusTextBlock.Text = "任务已取消";
+            AppendLog($"[{DateTime.Now:HH:mm:ss}] 任务已取消。{Environment.NewLine}");
             return -1;
         }
         catch (Exception exception)
         {
-            _statusTextBlock.Text = "任务失败";
             AppendLog(exception + Environment.NewLine);
             ShowError("任务失败", exception.Message);
             return -1;
         }
         finally
         {
+            _operationActive = false;
             SetBusy(false);
             _operationLock.Release();
+            _ = RefreshDeviceStatusAfterOperationAsync();
         }
     }
 
-    private async Task WaitFor9008Async(string status, CancellationToken cancellationToken)
+    private async Task<EdlPortInfo> WaitFor9008Async(string status, CancellationToken cancellationToken)
     {
         var announced = false;
         while (true)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var count = await DeviceDetector.DetectAsync(cancellationToken);
-            if (count > 0)
+            var devices = await EdlPortDetector.DetectAsync(cancellationToken);
+            if (devices.Count > 0)
             {
-                _statusTextBlock.Text = $"已检测到 {count} 台 9008 设备，正在{status}";
-                AppendLog($"[{DateTime.Now:HH:mm:ss}] 已检测到 9008 端口，开始{status}。{Environment.NewLine}");
-                return;
+                _lastDeviceStatus = FormatDeviceStatus(devices);
+                SetStatus($"{_lastDeviceStatus} · 准备{status}", DeviceState.Connected);
+                AppendLog($"[{DateTime.Now:HH:mm:ss}] 已检测到9008端口，开始{status}。{Environment.NewLine}");
+                return devices[0];
             }
 
             if (!announced)
@@ -409,9 +482,99 @@ public sealed partial class MainWindow : Window
                 AppendLog($"[{DateTime.Now:HH:mm:ss}] 正在等待设备进入 Qualcomm 9008 模式…{Environment.NewLine}");
                 announced = true;
             }
-            _statusTextBlock.Text = $"等待 9008 端口后执行：{status}";
+            _lastDeviceStatus = "未检测到9008设备";
+            SetStatus($"未检测到9008设备，正在等待：{status}", DeviceState.Waiting);
             await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
         }
+    }
+
+    private async Task MonitorDeviceStatusAsync(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                if (!_operationActive)
+                {
+                    await RefreshDeviceStatusAsync(force: false, cancellationToken);
+                }
+                await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            catch
+            {
+                if (!_operationActive)
+                {
+                    SetStatus("9008设备检测失败", DeviceState.Disconnected);
+                }
+                await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+            }
+        }
+    }
+
+    private async Task RefreshDeviceStatusAfterOperationAsync()
+    {
+        try
+        {
+            await Task.Delay(350, _closing.Token);
+            await RefreshDeviceStatusAsync(force: true, _closing.Token);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch
+        {
+            SetStatus("9008设备检测失败", DeviceState.Disconnected);
+        }
+    }
+
+    private async Task RefreshDeviceStatusAsync(bool force, CancellationToken cancellationToken)
+    {
+        if (!force && _operationActive)
+        {
+            return;
+        }
+
+        if (!await _deviceRefreshLock.WaitAsync(0, cancellationToken))
+        {
+            return;
+        }
+
+        try
+        {
+            var devices = await EdlPortDetector.DetectAsync(cancellationToken);
+            if (!force && _operationActive)
+            {
+                return;
+            }
+
+            _lastDeviceStatus = FormatDeviceStatus(devices);
+            SetStatus(
+                _lastDeviceStatus,
+                devices.Count > 0 ? DeviceState.Connected : DeviceState.Disconnected);
+        }
+        finally
+        {
+            _deviceRefreshLock.Release();
+        }
+    }
+
+    private static string FormatDeviceStatus(IReadOnlyList<EdlPortInfo> devices)
+    {
+        if (devices.Count == 0)
+        {
+            return "未检测到9008设备";
+        }
+
+        var first = devices[0];
+        var port = first.PortLabel;
+        var name = string.IsNullOrWhiteSpace(first.Name) ? "Qualcomm 9008" : first.Name.Trim();
+        return devices.Count == 1
+            ? $"已检测到9008设备：{port} · {name}"
+            : $"已检测到9008设备：{port} · {name}（共{devices.Count}台）";
     }
 
     private string? GetPartitionName()
@@ -466,12 +629,23 @@ public sealed partial class MainWindow : Window
         _logTextBox.CaretIndex = _logTextBox.Text.Length;
     }
 
-    private void SetBusy(bool busy, string? text = null)
+    private void SetBusy(bool busy) => _busyProgressBar.IsVisible = busy;
+
+    private void SetStatus(string text, DeviceState state)
     {
-        _busyProgressBar.IsVisible = busy;
-        if (!string.IsNullOrWhiteSpace(text))
+        _statusTextBlock.Text = text;
+        _statusDot.Fill = state switch
         {
-            _statusTextBlock.Text = text;
-        }
+            DeviceState.Connected => ConnectedBrush,
+            DeviceState.Waiting => WaitingBrush,
+            _ => DisconnectedBrush,
+        };
+    }
+
+    private enum DeviceState
+    {
+        Disconnected,
+        Waiting,
+        Connected,
     }
 }
