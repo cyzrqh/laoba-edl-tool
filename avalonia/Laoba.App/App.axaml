@@ -33,6 +33,18 @@
       <Setter Property="BorderThickness" Value="1" />
     </Style>
 
+    <Style Selector="SplitButton.action">
+      <Setter Property="Height" Value="36" />
+      <Setter Property="Background" Value="#F3F7FF" />
+      <Setter Property="Foreground" Value="#0969FF" />
+      <Setter Property="BorderBrush" Value="#C8DCFF" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="Button.danger">
       <Setter Property="Background" Value="#FFF3F3" />
       <Setter Property="Foreground" Value="#E73535" />
