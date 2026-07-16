@@ -13,10 +13,17 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <PublishReadyToRun>false</PublishReadyToRun>
 
-    <!-- 使用较保守的部分裁剪，缩小自包含 Avalonia 运行时，同时保留反射和动态加载兼容性。 -->
+    <!-- 部分裁剪兼顾 Avalonia 反射兼容性，并进一步去掉不需要的运行时功能。 -->
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>partial</TrimMode>
     <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <DebuggerSupport>false</DebuggerSupport>
+    <EventSourceSupport>false</EventSourceSupport>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <UseSizeOptimizedLinq>true</UseSizeOptimizedLinq>
     <SatelliteResourceLanguages>zh-Hans;zh-CN;en</SatelliteResourceLanguages>
 
     <DebugType>none</DebugType>
