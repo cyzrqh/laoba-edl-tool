@@ -12,8 +12,7 @@ if (Get-Variable PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyCo
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 Set-Location $Root
 
-# GitHub Actions 的 Windows 非交互控制台可能回退到 cp1252；统一使用 UTF-8，
-# 否则 Python 输出中文状态文本时会触发 UnicodeEncodeError。
+# GitHub Actions 的 Windows 非交互控制台可能回退到 cp1252；统一使用 UTF-8。
 $Utf8 = [System.Text.UTF8Encoding]::new($false)
 [Console]::InputEncoding = $Utf8
 [Console]::OutputEncoding = $Utf8
@@ -70,9 +69,7 @@ Assert-NativeSuccess "更新 pip/wheel/setuptools"
 & $Py -m pip install -r (Join-Path $Root "requirements-build.txt")
 Assert-NativeSuccess "安装本项目构建依赖"
 
-# capstone 5.0.9 和 cryptography 49 已不提供 32 位 Windows 预编译轮子，
-# 但上游只要求 capstone 和 cryptography>=3.3。先安装仍支持 win32 的兼容版本，
-# 后续安装上游 requirements.txt 时 pip 会保留这些已满足要求的版本。
+# capstone 5.0.9 和 cryptography 49 已不提供 32 位 Windows 预编译轮子。
 if ($Architecture -eq "x86") {
     & $Py -m pip install "capstone==5.0.2" "cryptography==43.0.3"
     Assert-NativeSuccess "安装 32 位 Windows 兼容依赖"
@@ -109,31 +106,18 @@ $env:LAOBA_ARCH = $Architecture
     --distpath $Dist `
     --workpath $BuildDir `
     (Join-Path $Root "build\laoba.spec")
-Assert-NativeSuccess "运行 PyInstaller"
+Assert-NativeSuccess "运行 PyInstaller 单文件构建"
 
-$AppDist = Join-Path $Dist "老八"
-if (-not (Test-Path $AppDist)) {
-    throw "PyInstaller 未生成预期目录：$AppDist"
+$BuiltExe = Join-Path $Dist "老八.exe"
+if (-not (Test-Path $BuiltExe)) {
+    throw "PyInstaller 未生成预期单文件：$BuiltExe"
 }
-
-$Commit = & git -C $Vendor rev-parse HEAD
-Assert-NativeSuccess "读取 bkerler/edl 提交号"
-$Commit = $Commit.Trim()
-$Info = @"
-老八刷机工具 1.0.0
-目标架构：$Architecture
-EDL 上游提交：$Commit
-构建时间：$([DateTime]::UtcNow.ToString("u")) UTC
-资源包 SHA-256：$((Get-FileHash (Join-Path $Root "assets\qualcomm_resource_pack.zip") -Algorithm SHA256).Hash.ToLower())
-"@
-$Info | Out-File -FilePath (Join-Path $AppDist "BUILD-INFO.txt") -Encoding utf8
-Copy-Item (Join-Path $Root "README.md") (Join-Path $AppDist "README.md")
 
 $OutDir = Join-Path $Root "release"
 New-Item -ItemType Directory -Path $OutDir -Force | Out-Null
-$PortableZip = Join-Path $OutDir "老八-Windows-$Architecture-portable.zip"
-if (Test-Path $PortableZip) { Remove-Item $PortableZip -Force }
-Compress-Archive -Path (Join-Path $AppDist "*") -DestinationPath $PortableZip -CompressionLevel Optimal
+$ReleaseExe = Join-Path $OutDir "老八-Windows-$Architecture.exe"
+if (Test-Path $ReleaseExe) { Remove-Item $ReleaseExe -Force }
+Copy-Item $BuiltExe $ReleaseExe -Force
 
 $SourceStage = Join-Path $env:TEMP ("laoba-source-stage-" + $PID)
 if (Test-Path $SourceStage) { Remove-Item $SourceStage -Recurse -Force }
@@ -176,6 +160,8 @@ if (Test-Path $SourceZip) { Remove-Item $SourceZip -Force }
 Compress-Archive -Path (Join-Path $SourceStage "*") -DestinationPath $SourceZip -CompressionLevel Optimal
 Remove-Item $SourceStage -Recurse -Force
 
+$ExeHash = (Get-FileHash $ReleaseExe -Algorithm SHA256).Hash.ToLower()
 Write-Host "构建完成：" -ForegroundColor Green
-Write-Host "  $PortableZip"
+Write-Host "  $ReleaseExe"
+Write-Host "  SHA-256: $ExeHash"
 Write-Host "  $SourceZip"
