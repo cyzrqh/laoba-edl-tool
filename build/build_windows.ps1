@@ -12,6 +12,15 @@ if (Get-Variable PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyCo
 $Root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
 Set-Location $Root
 
+# GitHub Actions 的 Windows 非交互控制台可能回退到 cp1252；统一使用 UTF-8，
+# 否则 Python 输出中文状态文本时会触发 UnicodeEncodeError。
+$Utf8 = [System.Text.UTF8Encoding]::new($false)
+[Console]::InputEncoding = $Utf8
+[Console]::OutputEncoding = $Utf8
+$OutputEncoding = $Utf8
+$env:PYTHONUTF8 = "1"
+$env:PYTHONIOENCODING = "utf-8"
+
 function Require-Command([string]$Name) {
     if (-not (Get-Command $Name -ErrorAction SilentlyContinue)) {
         throw "缺少构建命令：$Name。构建机需要 Git 和 Python 3.9；最终应用运行时不需要。"
