@@ -31,7 +31,7 @@
         </ComboBox>
 
         <Grid Grid.Row="2" Grid.Column="4" ColumnDefinitions="*,42">
-          <TextBox x:Name="XmlPathTextBox" Watermark="请选择 rawprogram XML" IsReadOnly="True" />
+          <TextBox x:Name="XmlPathTextBox" PlaceholderText="请选择 rawprogram XML" IsReadOnly="True" />
           <Button Grid.Column="1" Margin="6,0,0,0" Content="…" Click="BrowseXml_Click" />
         </Grid>
 
@@ -48,7 +48,7 @@
         <RadioButton Grid.Column="4" GroupName="SourceMode" Content="使用自定义地址" />
         <Grid Grid.Column="6" ColumnDefinitions="Auto,*" ColumnSpacing="10">
           <TextBlock VerticalAlignment="Center" Text="搜索分区" FontWeight="SemiBold" />
-          <TextBox x:Name="PartitionSearchTextBox" Grid.Column="1" Watermark="请输入分区名…" />
+          <TextBox x:Name="PartitionSearchTextBox" Grid.Column="1" PlaceholderText="请输入分区名…" />
         </Grid>
       </Grid>
     </Border>
@@ -71,7 +71,7 @@
                      Background="Transparent"
                      FontFamily="Consolas, Microsoft YaHei UI"
                      FontSize="12"
-                     VerticalScrollBarVisibility="Auto" />
+                     ScrollViewer.VerticalScrollBarVisibility="Auto" />
           </Border>
         </Grid>
       </Border>
