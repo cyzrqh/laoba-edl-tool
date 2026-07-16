@@ -2,12 +2,12 @@ from __future__ import annotations
 
 import multiprocessing as mp
 
-from laoba.gui import LaobaApp
+from laoba.modern_gui import ModernLaobaApp
 
 
 def main() -> None:
     mp.freeze_support()
-    LaobaApp().run()
+    ModernLaobaApp().run()
 
 
 if __name__ == "__main__":
