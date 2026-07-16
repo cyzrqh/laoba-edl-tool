@@ -40,19 +40,27 @@
       <Setter Property="BorderThickness" Value="1" />
     </Style>
 
-    <Style Selector="TextBox, ComboBox">
+    <Style Selector="TextBox">
+      <Setter Property="MinHeight" Value="36" />
+      <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Padding" Value="10,6" />
+      <Setter Property="Background" Value="White" />
+      <Setter Property="BorderBrush" Value="#DEE3EA" />
+      <Setter Property="CornerRadius" Value="6" />
+    </Style>
+
+    <Style Selector="ComboBox">
       <Setter Property="MinHeight" Value="36" />
       <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
       <Setter Property="FontSize" Value="13" />
       <Setter Property="Background" Value="White" />
       <Setter Property="BorderBrush" Value="#DEE3EA" />
       <Setter Property="CornerRadius" Value="6" />
-      <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <Style Selector="RadioButton, CheckBox">
       <Setter Property="FontFamily" Value="Microsoft YaHei UI, Segoe UI" />
-      <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Border.card">
