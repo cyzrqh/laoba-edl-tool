@@ -6,12 +6,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>..\..\assets\app_icon.ico</ApplicationIcon>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
-    <PublishTrimmed>false</PublishTrimmed>
-    <DebugType>embedded</DebugType>
+    <PublishReadyToRun>false</PublishReadyToRun>
+
+    <!-- 使用较保守的部分裁剪，缩小自包含 Avalonia 运行时，同时保留反射和动态加载兼容性。 -->
+    <PublishTrimmed>true</PublishTrimmed>
+    <TrimMode>partial</TrimMode>
+    <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
+    <SatelliteResourceLanguages>zh-Hans;zh-CN;en</SatelliteResourceLanguages>
+
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
