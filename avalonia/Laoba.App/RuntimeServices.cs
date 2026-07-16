@@ -17,14 +17,10 @@ public sealed record LoaderProfile(
     string Loader,
     string Description)
 {
-    public string DisplayName
-    {
-        get
-        {
-            var file = Path.GetFileName(Loader.Replace('\\', '/'));
-            return $"{file}  ·  {Brand} / {Series} / {Name}";
-        }
-    }
+    public string DisplayName =>
+        Name.StartsWith("红魔电竞平板Pro(", StringComparison.OrdinalIgnoreCase)
+            ? "红魔电竞平板Pro"
+            : Name;
 }
 
 public sealed class ResourceCatalog
@@ -48,6 +44,8 @@ public sealed class ResourceCatalog
         var root = document.Root ?? throw new InvalidDataException("Config.xml 没有根节点。");
         var profiles = new List<LoaderProfile>();
 
+        // 严格按照资源包 Config.xml 中 Brand → Series → Model 的原始顺序加入列表，
+        // 不再按文件名、品牌或中文名称重新排序。
         foreach (var brandNode in root.Elements("Brand"))
         {
             var brand = (string?)brandNode.Attribute("Name") ?? "未命名品牌";
@@ -74,10 +72,7 @@ public sealed class ResourceCatalog
             }
         }
 
-        return profiles
-            .OrderBy(profile => Path.GetFileName(profile.Loader), StringComparer.OrdinalIgnoreCase)
-            .ThenBy(profile => profile.Brand, StringComparer.CurrentCulture)
-            .ToArray();
+        return profiles.ToArray();
     }
 
     public async Task<string> ExtractLoaderAsync(LoaderProfile profile, CancellationToken cancellationToken = default)
