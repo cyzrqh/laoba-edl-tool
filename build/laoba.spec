@@ -5,10 +5,12 @@ import sys
 
 from PyInstaller.utils.hooks import collect_all, collect_submodules
 
-ROOT = Path(SPECPATH).resolve().parent.parent
+# PyInstaller 的 SPECPATH 是 .spec 所在目录（本项目为 build/），
+# 因此只向上一层即可得到仓库根目录。
+ROOT = Path(SPECPATH).resolve().parent
 VENDOR_EDL = ROOT / "vendor" / "edl"
 if not VENDOR_EDL.exists():
-    raise SystemExit("缺少 vendor/edl。请先运行 build/build_windows.ps1。")
+    raise SystemExit(f"缺少 vendor/edl：{VENDOR_EDL}。请先运行 build/build_windows.ps1。")
 
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(VENDOR_EDL))
