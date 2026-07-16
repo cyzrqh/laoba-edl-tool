@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using Avalonia.Controls;
@@ -10,6 +11,12 @@ namespace Laoba.App;
 
 public sealed partial class MainWindow : Window
 {
+    private const uint MbOk = 0x00000000;
+    private const uint MbOkCancel = 0x00000001;
+    private const uint MbIconWarning = 0x00000030;
+    private const uint MbIconError = 0x00000010;
+    private const int IdOk = 1;
+
     private readonly ResourceCatalog _catalog = new();
     private readonly BackendRunner _backend = new();
     private readonly CancellationTokenSource _closing = new();
@@ -55,16 +62,24 @@ public sealed partial class MainWindow : Window
         catch (Exception exception)
         {
             _statusTextBlock.Text = "内置引导加载失败";
-            _ = ShowInfoAsync("资源包错误", exception.Message);
+            ShowError("资源包错误", exception.Message);
         }
 
         Closing += (_, _) => _closing.Cancel();
     }
 
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    private static extern int MessageBoxW(IntPtr hWnd, string text, string caption, uint type);
+
+    private static bool Confirm(string title, string message) =>
+        MessageBoxW(IntPtr.Zero, message, title, MbOkCancel | MbIconWarning) == IdOk;
+
+    private static void ShowError(string title, string message) =>
+        MessageBoxW(IntPtr.Zero, message, title, MbOk | MbIconError);
+
     private async void BrowseXml_Click(object? sender, RoutedEventArgs e)
     {
-        var storage = StorageProvider;
-        var result = await storage.OpenFilePickerAsync(new FilePickerOpenOptions
+        var result = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "选择 rawprogram XML",
             AllowMultiple = false,
@@ -92,7 +107,7 @@ public sealed partial class MainWindow : Window
         catch (Exception exception)
         {
             _statusTextBlock.Text = "设备检测失败";
-            await ShowInfoAsync("检测失败", exception.Message);
+            ShowError("检测失败", exception.Message);
         }
         finally
         {
@@ -132,7 +147,7 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        if (!await ConfirmAsync("写入分区", $"即将把镜像写入分区“{partition}”。错误镜像可能导致设备无法启动。\n\n确定继续？"))
+        if (!Confirm("写入分区", $"即将把镜像写入分区“{partition}”。错误镜像可能导致设备无法启动。\n\n确定继续？"))
         {
             return;
         }
@@ -145,7 +160,7 @@ public sealed partial class MainWindow : Window
         var rawprogram = _xmlPathTextBox.Text?.Trim();
         if (string.IsNullOrWhiteSpace(rawprogram) || !File.Exists(rawprogram))
         {
-            await ShowInfoAsync("缺少 XML", "请先选择有效的 rawprogram XML 文件。");
+            ShowError("缺少 XML", "请先选择有效的 rawprogram XML 文件。");
             return;
         }
 
@@ -154,11 +169,11 @@ public sealed partial class MainWindow : Window
             .FirstOrDefault();
         if (patch is null)
         {
-            await ShowInfoAsync("缺少 patch XML", "rawprogram XML 所在目录中没有找到 patch*.xml。");
+            ShowError("缺少 patch XML", "rawprogram XML 所在目录中没有找到 patch*.xml。");
             return;
         }
 
-        if (!await ConfirmAsync("XML 刷写", "将执行多分区 XML 刷写。请确认 XML、镜像目录和所选内置引导完全匹配设备。\n\n确定继续？"))
+        if (!Confirm("XML 刷写", "将执行多分区 XML 刷写。请确认 XML、镜像目录和所选内置引导完全匹配设备。\n\n确定继续？"))
         {
             return;
         }
@@ -179,7 +194,7 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        if (!await ConfirmAsync("目录刷写", "将按目录内的分区镜像进行批量写入。请确认固件与设备完全匹配。\n\n确定继续？"))
+        if (!Confirm("目录刷写", "将按目录内的分区镜像进行批量写入。请确认固件与设备完全匹配。\n\n确定继续？"))
         {
             return;
         }
@@ -247,7 +262,7 @@ public sealed partial class MainWindow : Window
             return;
         }
 
-        if (await ConfirmAsync("擦除分区", $"分区“{partition}”中的数据将永久丢失。\n\n确定继续？"))
+        if (Confirm("擦除分区", $"分区“{partition}”中的数据将永久丢失。\n\n确定继续？"))
         {
             await RunEdlAsync(["e", partition], $"擦除 {partition}");
         }
@@ -255,7 +270,7 @@ public sealed partial class MainWindow : Window
 
     private async void FactoryReset_Click(object? sender, RoutedEventArgs e)
     {
-        if (await ConfirmAsync("恢复出厂设置", "将擦除 userdata 分区，用户数据会永久丢失。\n\n确定继续？"))
+        if (Confirm("恢复出厂设置", "将擦除 userdata 分区，用户数据会永久丢失。\n\n确定继续？"))
         {
             await RunEdlAsync(["e", "userdata"], "恢复出厂设置");
         }
@@ -269,30 +284,19 @@ public sealed partial class MainWindow : Window
         string status,
         Action<string>? capture = null)
     {
-        LoaderProfile? profile;
-        try
+        var profile = _loaderComboBox.SelectedItem as LoaderProfile;
+        if (profile is null)
         {
-            profile = _loaderComboBox.SelectedItem as LoaderProfile;
-            if (profile is null)
-            {
-                throw new InvalidOperationException("内置资源包中没有可用引导。");
-            }
-
-            if (!string.Equals(profile.Auth, "None", StringComparison.OrdinalIgnoreCase)
-                && !string.IsNullOrWhiteSpace(profile.Auth))
-            {
-                var accepted = await ConfirmAsync(
-                    "机型需要授权",
-                    $"当前内置引导标记的授权方案为“{profile.Auth}”。本工具不会绕过厂商认证。\n\n请确认你已有合法授权。继续？");
-                if (!accepted)
-                {
-                    return -1;
-                }
-            }
+            ShowError("无法开始", "内置资源包中没有可用引导。");
+            return -1;
         }
-        catch (Exception exception)
+
+        if (!string.Equals(profile.Auth, "None", StringComparison.OrdinalIgnoreCase)
+            && !string.IsNullOrWhiteSpace(profile.Auth)
+            && !Confirm(
+                "机型需要授权",
+                $"当前内置引导标记的授权方案为“{profile.Auth}”。本工具不会绕过厂商认证。\n\n请确认你已有合法授权。继续？"))
         {
-            await ShowInfoAsync("无法开始", exception.Message);
             return -1;
         }
 
@@ -335,7 +339,7 @@ public sealed partial class MainWindow : Window
         {
             _statusTextBlock.Text = "任务失败";
             AppendLog(exception + Environment.NewLine);
-            await ShowInfoAsync("任务失败", exception.Message);
+            ShowError("任务失败", exception.Message);
             return -1;
         }
         finally
@@ -358,7 +362,7 @@ public sealed partial class MainWindow : Window
             return value;
         }
 
-        _ = ShowInfoAsync("请选择分区", "请在分区表中选择一项，或在“搜索分区”框中输入准确的分区名。");
+        ShowError("请选择分区", "请在分区表中选择一项，或在“搜索分区”框中输入准确的分区名。");
         return null;
     }
 
@@ -394,71 +398,5 @@ public sealed partial class MainWindow : Window
         {
             _statusTextBlock.Text = text;
         }
-    }
-
-    private async Task<bool> ConfirmAsync(string title, string message)
-    {
-        var accepted = false;
-        var dialog = new Window
-        {
-            Title = title,
-            Width = 470,
-            Height = 230,
-            CanResize = false,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-        };
-        var confirm = new Button { Content = "继续", Classes = { "primary" }, MinWidth = 90 };
-        var cancel = new Button { Content = "取消", MinWidth = 90 };
-        confirm.Click += (_, _) => { accepted = true; dialog.Close(); };
-        cancel.Click += (_, _) => dialog.Close();
-        dialog.Content = new Grid
-        {
-            RowDefinitions = new RowDefinitions("*,Auto"),
-            Margin = new Avalonia.Thickness(22),
-            Children =
-            {
-                new TextBlock { Text = message, TextWrapping = Avalonia.Media.TextWrapping.Wrap, FontSize = 14 },
-                new StackPanel
-                {
-                    GridRow = 1,
-                    Orientation = Avalonia.Layout.Orientation.Horizontal,
-                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
-                    Spacing = 10,
-                    Children = { cancel, confirm },
-                },
-            },
-        };
-        await dialog.ShowDialog(this);
-        return accepted;
-    }
-
-    private async Task ShowInfoAsync(string title, string message)
-    {
-        var dialog = new Window
-        {
-            Title = title,
-            Width = 450,
-            Height = 210,
-            CanResize = false,
-            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-        };
-        var close = new Button { Content = "确定", Classes = { "primary" }, MinWidth = 90 };
-        close.Click += (_, _) => dialog.Close();
-        dialog.Content = new Grid
-        {
-            RowDefinitions = new RowDefinitions("*,Auto"),
-            Margin = new Avalonia.Thickness(22),
-            Children =
-            {
-                new TextBlock { Text = message, TextWrapping = Avalonia.Media.TextWrapping.Wrap, FontSize = 14 },
-                new StackPanel
-                {
-                    GridRow = 1,
-                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right,
-                    Children = { close },
-                },
-            },
-        };
-        await dialog.ShowDialog(this);
     }
 }
