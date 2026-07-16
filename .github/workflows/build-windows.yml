@@ -30,12 +30,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.9 (${{ matrix.python-architecture }})
+      - name: Set up Python 3.11 (${{ matrix.python-architecture }})
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.11'
           architecture: ${{ matrix.python-architecture }}
-          cache: pip
 
       - name: Set up .NET 8
         uses: actions/setup-dotnet@v4
